@@ -7,7 +7,10 @@ equivTest = function(N, t, lo, hi) {
   y = x + diff
   return(ttestBF(x, y, nullInterval=c(lo, hi), paired=T, rscale=.5))
 }
+# Load in BayesFactor package 
+require(BayesFactor)
 
+# Arriaga et al., 2008 and the no good rotten pilot test
 equivTest(20, .48, -.1, .1)
 equivTest(20, .53, -.1, .1)
 equivTest(20, .79, -.1, .1)
@@ -23,34 +26,9 @@ equivTest(20, 1.67, -.1, .1)
 equivTest(20, 2.27, -.1, .1)
 equivTest(20, 2.63, -.1, .1)
 
-# Arriaga et al and the no good rotten pilot test
-
-library(BayesFactor)
-
-tList = c(0.83,
-          1.29,
-          0.89,
-          1.67,
-          0.79,
-          1.14,
-          1.32,
-          0.48,
-          1.24,
-          1.56,
-          0.86,
-          0.53,
-          2.27,
-          2.63
-)
-exp(ttest.tstat(t=0.83, n1=20, rscale = 0.707)[['bf']])
-
-for (i in 1:length(tList)) {
-  print(exp(ttest.tstat(t=tList[i], n1=20, rscale = 0.707)[['bf']]))
-}
+## Update the section below:
 
 # Valadez & Ferguson and the no good very bad pilot test
-
-
 exp(linearReg.R2stat(N=25, p=2, R2=0.5, rscale = 0.353553390593274)[['bf']])
 
 # Adachi & Willoughby -- Are they matched?
