@@ -33,3 +33,20 @@ Bf(.132453, .030009, lower=-1, meanoftheory=.213171, sdtheory=.026252)
 Bf(.09245, -.08017, lower=-1, meanoftheory=.223656, sdtheory=.018621)
 
 
+## BF01 / BF10 for study 3 of Elson's CRTT complaint
+# inverse so we get BF01
+Flist = c(3.28,1.46,4.14,.95,.19,1.74,2.78,2.77,2.17,16.01,.17,.08,.01,10.57)
+tlist = sqrt(Flist)
+# 21 in each of 4 cells. main effect of violence?
+sink(file="Elson-output-BF.txt")
+for (i in 1:length(tlist)) {
+  BF01 = 1/exp(ttest.tstat(t=tlist[i], n1=42, n2=42, rscale = 0.707)[['bf']])
+  print(BF01)
+}
+sink()
+# or so we can use Dienes:
+sink(file="Elson-output-ESCI.txt")
+for (f in Flist) {
+  print(F2R_noZ(f, 84))
+}
+sink()
