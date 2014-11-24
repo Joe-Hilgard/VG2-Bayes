@@ -56,17 +56,17 @@ equivTest(15, 10, 3.43, -.1, .1) # Pace
 equivTest(15, 10, 3.00, -.1, .1) # Competitveness
 
 # Adachi & Willoughby -- Are they matched?
-# pilot 1
-# inverse so that we get BF01 not BF10
-1/exp(ttest.tstat(t=4.39, n1=14, rscale = 0.707)[['bf']])
-1/exp(ttest.tstat(t=-.46, n1=14, rscale = 0.707)[['bf']])
-1/exp(ttest.tstat(t=.59, n1=14, rscale = 0.707)[['bf']])
-1/exp(ttest.tstat(t=0.8, n1=14, rscale = 0.707)[['bf']])
-# experiment 1, inverse so we get BF01
-1/exp(ttest.tstat(t=7.858, n1=21, n2=21, rscale = 0.707)[['bf']])
-1/exp(ttest.tstat(t=-.387, n1=21, n2=21, rscale = 0.707)[['bf']])
-1/exp(ttest.tstat(t=-1.59, n1=21, n2=21, rscale = 0.707)[['bf']])
-1/exp(ttest.tstat(t=.89, n1=21, n2=21, rscale = 0.707)[['bf']])
+# pilot 1, 14 subjects (paired t-test)
+equivTestPaired(14, 4.39, -.1, .1) # Violence?
+equivTestPaired(14, -.46, -.1, .1) # Competition
+equivTestPaired(14, .59, -.1, .1)  # Difficulty
+equivTestPaired(14, .8, -.1, .1)   # Pace
+
+# experiment 1, 21 subs in 2 cells each
+equivTest(21, 21, 7.858, -.1, .1) # Violence?
+equivTest(21, 21, -.387, -.1, .1) # Competition
+equivTest(21, 21, -1.59, -.1, .1)  # Difficulty
+equivTest(21, 21, .89, -.1, .1)   # Pace
 
 # experiment 2 it would be necessary to have the raw data to perform anovaBF()
 # No, I could simulate this still... I need to pull from a normal,
