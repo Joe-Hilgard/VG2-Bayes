@@ -46,11 +46,14 @@ invertBF(esciTest(.22, 100, .4))
 esciTest(.17, 100, .4)
 invertBF(esciTest(.17, 100, .4))
 # Przybylski et al., Study 1
-esciTest(.004, 100, .4)
-invertBF(esciTest(.004, 100, .4))
+esciTest(.004, 99, .4)
+invertBF(esciTest(.004, 99, .4))
 # Przybylski et al., Study 2
-esciTest(.08, 100, .4) # or is it -.08?
-invertBF(esciTest(.08, 100, .4))
+esciTest(.08, 101, .4) # or is it -.08?
+invertBF(esciTest(.08, 101, .4))
+# Pryzyblski et al., Study 5
+esciTest(.03, 109, .4)
+invertBF(esciTest(.03, 109, .4))
 # Ivory & Kalyaraman, 2007
 esciTest(.13, 120, .4)
 invertBF(esciTest(.13, 120, .4))
@@ -93,6 +96,8 @@ BF02(sd=.101535, .171667, lower=-1, meanoftheory=.298566, sdtheory=.01996)
 BF02(sd=.102062, 0, lower=-1, meanoftheory=.298566, sdtheory=.01996)
 # Przybylski et al., Study 2
 BF02(sd=.101015, .080171, lower=-1, meanoftheory=.298566, sdtheory=.01996)
+# Przybylski et al., Study 5
+BF02(.03, 1/sqrt(109-3), lower=-1, meanoftheory=.298566, sdtheory=.01996)
 # Ivory & Kalyraman, 2007
 BF02(sd=.09245, mean=.13074, lower=-1, meanoftheory=.298566, sdtheory=.01996)
 
@@ -116,12 +121,6 @@ BF02(sd=.09245, -.08017, lower=-1, meanoftheory=.223656, sdtheory=.018621)
 
 
 ## BF01 / BF10 for study 2 / table 2 of Elson's CRTT complaint
-##################################
-# WARNING! URGENT!               #
-# THIS DOES NOT CONSIDER         #
-# THAT r IS SOMETIMES NEGATIVE!  #
-# THUS MANY BF01S ARE TOO SMALL! #
-##################################
 # inverse so we get BF01
 # These are F(1, 80) from Elson's Table 2, plus the reported count of low volume settings
 Flist = c(3.28, 1.46, 4.14, .95, .19, 1.74, 2.78, 2.77, 2.17, 16.01, .17, .08, .01,
@@ -174,3 +173,53 @@ write(bf02list, file="Elson-output-BF02.txt", ncolumns=1)
 #   print(F2R_noZ(f, 84))
 # }
 # sink()
+
+# Re-analysis of Tear & Nielsen, 2014, using values reported in Table 1
+# Helper functions to combine violent & ultraviolent cells, generate t-value of pairwise contrast
+pool.sd = function(sds, ns) {
+  num = sum((ns-1)*sds^2)
+  denom = sum(ns-1)
+  pool.var = num/denom
+  pool.sd = sqrt(pool.var)
+  return(pool.sd)
+}
+welch.t = function(m1, m2, sd1, sd2, n1, n2) {
+  se_diff = sqrt(sd1^2/n1 + sd2^2/n2)
+  mean_diff = m1-m2
+  return(mean_diff/se_diff)
+}
+t2R = function(tstat, N, digits=2) {
+  neg = tstat<0
+  Fstat = tstat^2
+  r.equiv = sqrt(Fstat/(Fstat + N - 2))
+  if(neg==T) {r.equiv=-(r.equiv)}
+  zScore = 1/2 * log((1+r.equiv)/(1-r.equiv))
+  z.se = 1/sqrt(N-3)
+  z.low = r.equiv-1.96*z.se
+  z.hi = r.equiv+1.96*z.se
+  r.equiv.low = (exp(2*z.low)-1)/(exp(2*z.low)+1)
+  r.equiv.hi = (exp(2*z.hi)-1)/(exp(2*z.hi)+1)
+  print(paste("Point estimate:", r.equiv))
+  print(paste("95% CI: [", r.equiv.low, ", ", r.equiv.hi, "]", sep=""))
+  return(c(r.equiv.low, r.equiv, r.equiv.hi))
+}
+n = 120/3
+# helping behavior
+help = welch.t(3.2, mean(3.2, 3.02), 1.92, pool.sd(c(1.34, 1.03), c(40, 40)), 40, 80)
+# hurting behavior
+hurt = welch.t(3.35, mean(3.3, 3.35), 1.97, pool.sd(c(1.52, 1.21), c(40, 40)), 40, 80)
+# Charity donation
+charity = welch.t(2, mean(2.33, 3.0), 1.94, pool.sd(c(2.03, 2.10), c(40, 40)), 40, 80)
+## effect sizes
+t2R(help, 120)
+t2R(hurt, 120)
+t2R(charity, 120)
+
+# Now make BF01s:
+1/exp(ttest.tstat(t=help, n1=40, n2=80, rscale = 0.5)[['bf']])
+1/exp(ttest.tstat(t=hurt, n1=40, n2=80, rscale = 0.5)[['bf']])
+1/exp(ttest.tstat(t=charity, n1=40, n2=80, rscale = 0.5)[['bf']])
+# and BF02s:
+#BF02(atanh(0), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252) # different mean/sd of theory for prosoc
+BF02(atanh(.013), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252)
+#BF02(atanh(-.079), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252) # different mean/sd of theory for prosoc
