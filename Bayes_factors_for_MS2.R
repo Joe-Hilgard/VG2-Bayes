@@ -30,6 +30,10 @@ equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
 invertBF = function(model) {
   return(1/exp(model@bayesFactor[['bf']]))
 }
+# This function just takes the result from the D-C calculator and inverts it
+BF02 = function(mean, sd, lower, meanoftheory, sdtheory) {
+  return(1/Bf(obtained=mean, sd=sd, lower=lower, meanoftheory=meanoftheory, sdtheory=sdtheory)$BayesFactor)
+}
 # could also use my equivTest function but that requires the exact per-cell N
 # List of BF01's from JZS Bayes, scale=.4
 # Remember slotNames() to see items w/in S4 environment
@@ -77,10 +81,6 @@ invertBF(esciTest(-.08, 120, .4))
 
 
 # List of BF02's from Dienes-Christie calculator
-  # This function just takes the result from the D-C calculator and inverts it
-BF02 = function(mean, sd, lower, meanoftheory, sdtheory) {
-  return(1/Bf(obtained=mean, sd=sd, lower=lower, meanoftheory=meanoftheory, sdtheory=sdtheory)$BayesFactor)
-}
   
 # All effect sizes are in r-to-z units s.t. normal distribution applies 
 # Aggressive affect
@@ -115,7 +115,7 @@ BF02(sd=.132453, .030009, lower=-1, meanoftheory=.213171, sdtheory=.026252)
 BF02(sd=.09245, -.08017, lower=-1, meanoftheory=.223656, sdtheory=.018621)
 
 
-## BF01 / BF10 for study 3 of Elson's CRTT complaint
+## BF01 / BF10 for study 2 / table 2 of Elson's CRTT complaint
 ##################################
 # WARNING! URGENT!               #
 # THIS DOES NOT CONSIDER         #
@@ -123,14 +123,30 @@ BF02(sd=.09245, -.08017, lower=-1, meanoftheory=.223656, sdtheory=.018621)
 # THUS MANY BF01S ARE TOO SMALL! #
 ##################################
 # inverse so we get BF01
-Flist = c(3.28,1.46,4.14,.95,.19,1.74,2.78,2.77,2.17,16.01,.17,.08,.01,10.57)
+# These are F(1, 80) from Elson's Table 2, plus the reported count of low volume settings
+Flist = c(3.28, 1.46, 4.14, .95, .19, 1.74, 2.78, 2.77, 2.17, 16.01, .17, .08, .01,
+          10.57) # this last 10.57 is in text but not table, has neg. r.
 tlist = sqrt(Flist)
+# Function to turn these to effect size r
+F2R = function(Fstat, N, width=.95, neg=F) {
+  r.equiv = sqrt(Fstat/(Fstat + N - 2)) # is this where the loss of fidelity happens?
+  if(neg==T) {r.equiv=-(r.equiv)}
+  zScore = 1/2 * log((1+r.equiv)/(1-r.equiv))
+  z.se = 1/sqrt(N-3)
+  margin = -qnorm((1-width)/2)
+  z.low = r.equiv-margin*z.se
+  z.hi = r.equiv+margin*z.se
+  r.equiv.low = (exp(2*z.low)-1)/(exp(2*z.low)+1)
+  r.equiv.hi = (exp(2*z.hi)-1)/(exp(2*z.hi)+1)
+  return(c(r.equiv.low, r.equiv, r.equiv.hi))
+}
 # 21 in each of 4 cells. main effect of violence?
 rList = c()
 for (f in Flist) {
   r = F2R(f, 84)[2]
   rList = c(rList, r)
 }
+rList[length(rList)] = -rList[length(rList)] # flipping that last one
 write(rList, "Elson-output-r.txt", ncolumns=1)
 
 bf01list = c()
@@ -139,11 +155,12 @@ for (i in 1:length(tlist)) {
   bf01list = c(bf01list, BF01)
 }
 write(bf01list, "Elson-output-BF01.txt", ncolumns=1)
-# or use Dienes:
+# or use Dienes for BF02:
 bf02list = c(); N = 84
 for (f in Flist) {
   r.equiv = sqrt(f/(f + N - 2))
   z = atanh(r.equiv)
+  if (f == 10.57) z = -z # turn that last one negative, sorry about the kludge.
   z.se = 1/sqrt(N-3)
   bf02 = BF02(z, z.se, lower=-1, meanoftheory=.213171, sdtheory=.026252)
   bf02list = c(bf02list, bf02)
