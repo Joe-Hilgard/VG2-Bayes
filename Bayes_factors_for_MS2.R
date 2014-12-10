@@ -144,6 +144,7 @@ rList = c()
 for (f in Flist) {
   r = F2R(f, 84)[2]
   rList = c(rList, r)
+  rList = round(rList, 2)
 }
 rList[length(rList)] = -rList[length(rList)] # flipping that last one
 write(rList, "Elson-output-r.txt", ncolumns=1)
@@ -167,6 +168,9 @@ for (f in Flist) {
   #zlist.se = c(zlist.se, z.se)
 }
 write(bf02list, file="Elson-output-BF02.txt", ncolumns=1)
+
+BF02(sd=.111111, .202733, lower=-1, meanoftheory=.213171, sdtheory=.026252)
+
 
 # sink(file="Elson-output-ESCI.txt")
 # for (f in Flist) {

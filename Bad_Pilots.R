@@ -15,6 +15,15 @@ equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
   y = y + t*SE # center at t*SE
   return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
 }
+#welch's t
+welch.t = function(m1, m2, sd1, sd2, n1, n2) {
+  se_diff = sqrt(sd1^2/n1 + sd2^2/n2)
+  mean_diff = m1-m2
+  return(mean_diff/se_diff)
+}
+invertBF = function(model) {
+  return(1/exp(model@bayesFactor[['bf']]))
+}
 # Load in BayesFactor package 
 require(BayesFactor)
 
@@ -108,3 +117,33 @@ dat$y = rnorm(45)
 dat$y = dat$y + .3*(dat$x=="A") - .5*(dat$x == "C")
 anovaBF(y ~ x, data=dat)
 
+
+# Anderson et al., 2004: In which it is argued that Glider Pro and Marathon 2 are equivalent
+# 120 subjects across 10 games = 12 participants per game
+# Violence difference between Marathon 2 and Glider Pro is r = .842 [.392, .854]
+# They report means and mean squared errors, e.g. the average variance around each mean
+# We'll have to assume that MSE as the variance within each cell.
+
+# Generate t-values, then plug those ts into equivTest:
+# Difficulty
+t.dif = welch.t(4.25, 3.62, sqrt(2.37), sqrt(2.37), 12, 12)
+# Enjoyment
+t.enj = welch.t(3.69, 3.94, sqrt(2.35), sqrt(2.35), 12, 12)
+# Action
+t.act = welch.t(3.67, 2.31, sqrt(2.01), sqrt(2.01), 12, 12)
+# Frustration
+t.fru = welch.t(4.25, 4.75, sqrt(2.38), sqrt(2.38), 12, 12)
+# Violence
+t.vio = welch.t(4.86, 1.41, sqrt(2.38), sqrt(2.38), 12, 12)
+# Bayes factors: (inverted so they give BF01 instead of BF10)
+invertBF(equivTest(12, 12, t.dif, nullInterval=c(-.1, .1)))
+invertBF(equivTest(12, 12, t.enj, nullInterval=c(-.1, .1)))
+invertBF(equivTest(12, 12, t.act, nullInterval=c(-.1, .1))) # BF here favors the alternative 2.61-to-1
+invertBF(equivTest(12, 12, t.fru, nullInterval=c(-.1, .1)))
+invertBF(equivTest(12, 12, t.vio, nullInterval=c(-.1, .1)))
+
+# Glider Pro & Marathon 2 might be equivalent on difficulty, enjoyment, frustration, but might differ in pace of action
+# Experiments 2 and 3 of this manuscript have larger sample sizes and use similar manipulations.
+#   Experiment 2 does not report any check of these matching variables.
+#   Experiment 3 reports an absence of statistical significance, but the manipulation is a little different,
+#     and the necessary summary statistics are not reported.
