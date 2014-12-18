@@ -5,12 +5,13 @@ require(BayesFactor)
 #Bf(sd, obtained, uniform = FALSE, lower=0, upper=1, meanoftheory=0, sdtheory=1, tails=2)
 
 # Load helper functions
-esciTest = function(obtained, n, rscale, paired=F) {
-  se = sqrt((1-obtained^2)/(n-2))
-  t = obtained / se
-  if (paired==F) return(equivTest(ceiling(n/2), floor(n/2), t=t, rscale=rscale))
-  else return(equivTestPaired(n, t, rscale=rscale))
-} 
+equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
+  x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
+  y = rnorm(n2); y = y - mean(y); y = y / sd(y)  # center and scale at 0
+  SE = sqrt(var(x)/n1 + var(y)/n2)
+  y = y + t*SE # center y at t*SE
+  return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
+}
 equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   x = rnorm(N)
   diff = rnorm(N, sd = sqrt(N))
@@ -19,17 +20,24 @@ equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   y = x + diff
   return(ttestBF(x, y, nullInterval=nullInterval, paired=T, rscale=rscale))
 }
-equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
-  x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
-  y = rnorm(n2)
-  y = y/sd(y); y = y - mean(y) # center and scale at 0
-  SE = sqrt(var(x)/n1 + var(y)/n2)
-  y = y + t*SE # center at t*SE
-  return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
-}
+esciTest = function(r, n, rscale, paired=F) {
+  se.r = sqrt((1-r^2)/(n-2)) # from http://www.sjsu.edu/faculty/gerstman/StatPrimer/correlation.pdf
+  # Maybe it only holds for paired designs?
+  t = r / se.r 
+  if (paired==F) return(equivTest(n1=ceiling(n/2), n2=floor(n/2), t=t, rscale=rscale))
+  else return(equivTestPaired(N=n, t=t, rscale=rscale))
+} 
 invertBF = function(model) {
   return(1/exp(model@bayesFactor[['bf']]))
 }
+# Why do esciTest(.4, 40, .4) and esciTest(.4, 40, .4, paired=T)
+  # return different values? Theoretically/mathematically speaking.
+r2t = function(r, n) {
+  se.r = sqrt((1-r^2)/(n-2)) # from http://www.sjsu.edu/faculty/gerstman/StatPrimer/correlation.pdf
+  t = r / se.r
+  return(t)
+}
+
 # This function just takes the result from the D-C calculator and inverts it
 BF02 = function(mean, sd, lower, meanoftheory, sdtheory) {
   return(1/Bf(obtained=mean, sd=sd, lower=lower, meanoftheory=meanoftheory, sdtheory=sdtheory)$BayesFactor)
