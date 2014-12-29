@@ -1,13 +1,14 @@
-library('msm')
+#library('msm')
 #one and two-sample implemented
 
+setwd("~/VG2-Bayes/")
 N=40  #two-sample
 # N=20 #one-sample
 
 z=seq(-2, 2,.005) # over what interval do we plot?
 I=length(z)
 
-pdf('ex.pdf', width=8, height=11) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
+pdf('BFFigure.pdf', width=8, height=11) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(3,2),cex=1.5,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
 
 #Cauchy
@@ -119,108 +120,108 @@ axis(2, at=c(.0001, .001, .01, .1, 1, 10),
 
 # Empty plot to fill last space?
 frame()
-
-#################################################
-myRate=4
-myShape=3
-mySpec=function(z,rate,shape) .5*dgamma(z,shape=shape,rate=rate)+.5*dgamma(-z,shape=shape,rate=rate)
-f=mySpec(z,rate=myRate,shape=myShape)
-plot(z,f,typ='n',xlab=expression(paste("True Effect Size, ",delta)),ylab="Density",ylim=c(0,1))
-lines(z,f,col="darkgreen",lty=2,lwd=2)
-arrows(0,0,0,1)
-text(-.2,.9,expression(paste("Model ",M[0])),adj=1)
-text(1,.4,expression(paste("Model ",M[b])),col="darkgreen",adj=0)
-mtext(side=3,adj=.05,cex=1.7,'C.',line=-1.1)
-
-Uintgrand=function(delta,obs,N)
-  #dt(sqrt(N/2)*obs,2*(N-1),sqrt(N/2)*delta)*mySpec(delta,rate=myRate,shape=myShape)
-  dt(sqrt(N)*obs,N-1,sqrt(N)*delta)*mySpec(delta,rate=myRate,shape=myShape)
-
-UDens=function(obs,N) integrate(Uintgrand,lower=-6,upper=6,obs=obs,N=N)$value
-
-Upred=1:I
-for (i in 1:I) Upred[i]=UDens(z[i],N)
-plot(z,Epred,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
-abline(v=obs,col='grey')
-lines(z,Upred,lty=2,lwd=2,col='darkgreen')
-text(-.35,.3,expression(paste("Model ",M[0])),adj=1)
-text(1.05,.08,expression(paste("Model ",M[b])),col="darkgreen",adj=0)
-points(obs[1],EDens(obs[1],N),cex=1.3,pch=19)
-points(obs[1],UDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
-points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
-points(obs[2],UDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
-mtext(side=3,adj=.05,cex=1.7,'D.',line=-1.1)
-
-####################
-
-f=dtnorm(z,0,1,0,Inf)
-plot(z,f,typ='n',xlab=expression(paste("True Effect Size, ",delta)),ylab="Density",ylim=c(0,1))
-lines(z,f,col="darkgreen",lty=2,lwd=2)
-#lines(-z,f,typ='l',col="darkred",lwd=2,lty=2)
-arrows(0,0,0,1)
-text(-.2,.9,expression(paste("Model ",M[0])),adj=1)
-text(1.1,.5,expression(paste("Model ",M[p])),col="darkgreen",adj=0)
-mtext(side=3,adj=0,cex=1.5,'E.')
-
-WMintgrand=function(delta,obs,N)
-  #dt(sqrt(N/2)*obs,2*(N-1),sqrt(N/2)*delta)*dtnorm(delta,0,1,0,Inf)
-  dt(sqrt(N)*obs,(N-1),sqrt(N)*delta)*dtnorm(delta,0,1,0,Inf)
-
-WMDens=function(obs,N) integrate(WMintgrand,lower=0,upper=10,obs=obs,N=N)$value
-
-WMpred=1:I
-for (i in 1:I) WMpred[i]=WMDens(z[i],N)
-plot(z,Epred,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
-abline(v=obs,col='grey')
-lines(z,WMpred,lty=2,lwd=2,col='darkgreen')
-lines(-z,WMpred,lty=3,lwd=2,col='darkred')
-text(-.35,.3,expression(paste("Model ",M[0])),adj=1)
-text(1.0,.13,expression(paste("Model ",M[p])),col="darkgreen",adj=0)
-text(-1.0,.13,expression(paste("Model ",M[n])),col="darkred",adj=1)
-points(obs[1],EDens(obs[1],N),cex=1.3,pch=19)
-points(obs[1],WMDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
-points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
-points(obs[2],WMDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
-points(obs[1],WMDens(-obs[1],N),cex=1.3,pch=19,col='darkred')
-points(obs[2],WMDens(-obs[2],N),cex=1.3,pch=21,col='darkred',bg='white',lwd=2)
-mtext(side=3,adj=.05,cex=1.7,'F.',line=-1.1)
-
-
-######################
-plot(z,f,typ='n',xlab=expression(paste("True Effect Size, ",delta)),ylab="Density",ylim=c(0,1))
-arrows(0,0,0,1)
-arrows(.2,0,.2,1,lty=2,col='darkgreen',lwd=2)
-text(-.2,.9,expression(paste("Model ",M[0])),adj=1)
-text(.4,.9,expression(paste("Model ",M[d])),col="darkgreen",adj=0)
-mtext(side=3,adj=0,cex=1.5,'E.')
-mtext(side=3,adj=.05,cex=1.7,'G.',line=-1.1)
-
-#ChDens=function(obs,N) dt(sqrt(N/2)*obs,2*(N-1),sqrt(N/2)*.2)
-ChDens=function(obs,N) dt(sqrt(N)*obs,N-1,sqrt(N)*.2)
-Chpred=ChDens(z,N)
-plot(z,Epred,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
-abline(v=obs,col='grey')
-lines(z,Chpred,lty=2,lwd=2,col='darkgreen')
-text(-.35,.3,expression(paste("Model ",M[0])),adj=1)
-text(.8,.1,expression(paste("Model ",M[d])),adj=0,col='darkgreen')
-points(obs[1],EDens(obs[1],N),cex=1.3,pch=19)
-points(obs[1],ChDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
-points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
-points(obs[2],ChDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
-mtext(side=3,adj=.05,cex=1.7,'H.',line=-1.1)
-
 dev.off()
-
-
-bf=matrix(ncol=4,c(
-  CDens(obs[1],N)/EDens(obs[1],N),
-  CDens(obs[2],N)/EDens(obs[2],N),
-  UDens(obs[1],N)/EDens(obs[1],N),
-  UDens(obs[2],N)/EDens(obs[2],N),
-  WMDens(obs[1],N)/EDens(obs[1],N),
-  WMDens(obs[2],N)/EDens(obs[2],N),
-  ChDens(obs[1],N)/EDens(obs[1],N),
-  ChDens(obs[2],N)/EDens(obs[2],N)))
-
-print(c(CDens(obs[1],N),EDens(obs[1],N)))
-print(c(CDens(obs[2],N),EDens(obs[2],N)))
+# #################################################
+# myRate=4
+# myShape=3
+# mySpec=function(z,rate,shape) .5*dgamma(z,shape=shape,rate=rate)+.5*dgamma(-z,shape=shape,rate=rate)
+# f=mySpec(z,rate=myRate,shape=myShape)
+# plot(z,f,typ='n',xlab=expression(paste("True Effect Size, ",delta)),ylab="Density",ylim=c(0,1))
+# lines(z,f,col="darkgreen",lty=2,lwd=2)
+# arrows(0,0,0,1)
+# text(-.2,.9,expression(paste("Model ",M[0])),adj=1)
+# text(1,.4,expression(paste("Model ",M[b])),col="darkgreen",adj=0)
+# mtext(side=3,adj=.05,cex=1.7,'C.',line=-1.1)
+# 
+# Uintgrand=function(delta,obs,N)
+#   #dt(sqrt(N/2)*obs,2*(N-1),sqrt(N/2)*delta)*mySpec(delta,rate=myRate,shape=myShape)
+#   dt(sqrt(N)*obs,N-1,sqrt(N)*delta)*mySpec(delta,rate=myRate,shape=myShape)
+# 
+# UDens=function(obs,N) integrate(Uintgrand,lower=-6,upper=6,obs=obs,N=N)$value
+# 
+# Upred=1:I
+# for (i in 1:I) Upred[i]=UDens(z[i],N)
+# plot(z,Epred,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
+# abline(v=obs,col='grey')
+# lines(z,Upred,lty=2,lwd=2,col='darkgreen')
+# text(-.35,.3,expression(paste("Model ",M[0])),adj=1)
+# text(1.05,.08,expression(paste("Model ",M[b])),col="darkgreen",adj=0)
+# points(obs[1],EDens(obs[1],N),cex=1.3,pch=19)
+# points(obs[1],UDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
+# points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
+# points(obs[2],UDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
+# mtext(side=3,adj=.05,cex=1.7,'D.',line=-1.1)
+# 
+# ####################
+# 
+# f=dtnorm(z,0,1,0,Inf)
+# plot(z,f,typ='n',xlab=expression(paste("True Effect Size, ",delta)),ylab="Density",ylim=c(0,1))
+# lines(z,f,col="darkgreen",lty=2,lwd=2)
+# #lines(-z,f,typ='l',col="darkred",lwd=2,lty=2)
+# arrows(0,0,0,1)
+# text(-.2,.9,expression(paste("Model ",M[0])),adj=1)
+# text(1.1,.5,expression(paste("Model ",M[p])),col="darkgreen",adj=0)
+# mtext(side=3,adj=0,cex=1.5,'E.')
+# 
+# WMintgrand=function(delta,obs,N)
+#   #dt(sqrt(N/2)*obs,2*(N-1),sqrt(N/2)*delta)*dtnorm(delta,0,1,0,Inf)
+#   dt(sqrt(N)*obs,(N-1),sqrt(N)*delta)*dtnorm(delta,0,1,0,Inf)
+# 
+# WMDens=function(obs,N) integrate(WMintgrand,lower=0,upper=10,obs=obs,N=N)$value
+# 
+# WMpred=1:I
+# for (i in 1:I) WMpred[i]=WMDens(z[i],N)
+# plot(z,Epred,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
+# abline(v=obs,col='grey')
+# lines(z,WMpred,lty=2,lwd=2,col='darkgreen')
+# lines(-z,WMpred,lty=3,lwd=2,col='darkred')
+# text(-.35,.3,expression(paste("Model ",M[0])),adj=1)
+# text(1.0,.13,expression(paste("Model ",M[p])),col="darkgreen",adj=0)
+# text(-1.0,.13,expression(paste("Model ",M[n])),col="darkred",adj=1)
+# points(obs[1],EDens(obs[1],N),cex=1.3,pch=19)
+# points(obs[1],WMDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
+# points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
+# points(obs[2],WMDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
+# points(obs[1],WMDens(-obs[1],N),cex=1.3,pch=19,col='darkred')
+# points(obs[2],WMDens(-obs[2],N),cex=1.3,pch=21,col='darkred',bg='white',lwd=2)
+# mtext(side=3,adj=.05,cex=1.7,'F.',line=-1.1)
+# 
+# 
+# ######################
+# plot(z,f,typ='n',xlab=expression(paste("True Effect Size, ",delta)),ylab="Density",ylim=c(0,1))
+# arrows(0,0,0,1)
+# arrows(.2,0,.2,1,lty=2,col='darkgreen',lwd=2)
+# text(-.2,.9,expression(paste("Model ",M[0])),adj=1)
+# text(.4,.9,expression(paste("Model ",M[d])),col="darkgreen",adj=0)
+# mtext(side=3,adj=0,cex=1.5,'E.')
+# mtext(side=3,adj=.05,cex=1.7,'G.',line=-1.1)
+# 
+# #ChDens=function(obs,N) dt(sqrt(N/2)*obs,2*(N-1),sqrt(N/2)*.2)
+# ChDens=function(obs,N) dt(sqrt(N)*obs,N-1,sqrt(N)*.2)
+# Chpred=ChDens(z,N)
+# plot(z,Epred,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
+# abline(v=obs,col='grey')
+# lines(z,Chpred,lty=2,lwd=2,col='darkgreen')
+# text(-.35,.3,expression(paste("Model ",M[0])),adj=1)
+# text(.8,.1,expression(paste("Model ",M[d])),adj=0,col='darkgreen')
+# points(obs[1],EDens(obs[1],N),cex=1.3,pch=19)
+# points(obs[1],ChDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
+# points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
+# points(obs[2],ChDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
+# mtext(side=3,adj=.05,cex=1.7,'H.',line=-1.1)
+# 
+# dev.off()
+# 
+# 
+# bf=matrix(ncol=4,c(
+#   CDens(obs[1],N)/EDens(obs[1],N),
+#   CDens(obs[2],N)/EDens(obs[2],N),
+#   UDens(obs[1],N)/EDens(obs[1],N),
+#   UDens(obs[2],N)/EDens(obs[2],N),
+#   WMDens(obs[1],N)/EDens(obs[1],N),
+#   WMDens(obs[2],N)/EDens(obs[2],N),
+#   ChDens(obs[1],N)/EDens(obs[1],N),
+#   ChDens(obs[2],N)/EDens(obs[2],N)))
+# 
+# print(c(CDens(obs[1],N),EDens(obs[1],N)))
+# print(c(CDens(obs[2],N),EDens(obs[2],N)))

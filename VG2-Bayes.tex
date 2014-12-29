@@ -22,6 +22,7 @@
 %  Adding caption package in attempt to add `normal' table captions, too
 %\usepackage{caption} % i don't think it's actually working, think we have package conflct
 \usepackage{multirow}
+\usepackage{pdfpages}
 
 % Need better shortTitle
 \rightheader{Bayesian Reanalysis of Violent Media}
@@ -240,104 +241,110 @@ With Bayes factors, there is no such dichotomization or sufficient threshold; in
 % % % % % % % % % % % % % % % %
 
 \begin{figure}
-\includegraphics[width=6in]{BFfigure.pdf}
+\includegraphics[width=\textwidth, keepaspectratio]{BFfigure.pdf}
 \caption{Bayesian model comparison.}
 \label{BFfig}
 \end{figure}
 % image dimensions far exceed table dimensions
 
 \begin{table}
-\caption{Pilot test results}
-\begin{tabular}{lcccc} 
-&$t$&$p$&$r$&$BF_{01}$ \\ \hline
-Arriaga et al., 2008 \\ \cline{1-1}
-Difficulty&2.63&.017&.53&1-to-3.98 \\
-Competence&2.27&.035&.47&1-to-2.19 \\
-Discomfort&1.67&.110&.37&1.13-to-1 \\ 
-Realism&1.56&.135&.35&1.32-to-1 \\
-Frustration&1.32&.201&.30&1.80-to-1 \\
-Pleasure&1.29&.214&.29&1.87-to-1 \\
-Action&1.24&.229&.28&1.99-to-1 \\
-Disorientation&1.14&.267&.26&2.24-to-1 \\ 
-Excitement&0.89&.385&.21&2.92-to-1 \\
-Identification&0.86&.398&.20&3.00-to-1 \\
-Satisfaction&0.83&.419&.19&3.09-to-1 \\ 
-Boredom&0.79&.437&.18&3.20-to-1 \\ 
-Presence&0.53&.601&.12&3.91-to-1 \\
-Involvement&0.48&.634&.11&40.4-to-1 \\
-&&&& \\ 
-Anderson et al., 2004 \\ \cline{1-1}
-Action&2.35&.028&.45&1-to-2.61 \\
-Difficulty&1.00&.327&.21&1.71-to-1 \\
-Frustration&-0.79&.436&-.17&1.98-to-1 \\
-Enjoyment&-0.40&.693&-.08&2.39-to-1 \\
-Violence&5.48&$<.001$&.76&1-to-818 \\
-\multicolumn{5}{l}{\multirow{2}{90mm}{Pilot test results from \citet{Arriaga:etal:2008} and \citet{Anderson:etal:2004}. Pilot data is largely agnostic between the null and alternative, and in fact sometimes indicates equally strong evidence of certain confounds. {\em Note:} $B_{01}$ ranges from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). Contrary to the authors’ original conclusions, the pilot test has some evidence the games differ in feelings of competence, and fairly substantial evidence that they differ in difficulty. $H_0: |\delta| < .1$; $H_1: \delta \sim Cauchy(scale = .5)$. All Bayes factors rounded to two significant digits.}}
-\end{tabular}
+\caption{Pilot test results.}
+\includegraphics{Arriaga_Anderson_table.pdf}
+%\begin{tabular}{lcccc} 
+%&$t$&$p$&$r$&$BF_{01}$ \\ \hline
+%Arriaga et al., 2008 \\ \cline{1-1}
+%Difficulty&2.63&.017&.53&1-to-3.98 \\
+%Competence&2.27&.035&.47&1-to-2.19 \\
+%Discomfort&1.67&.110&.37&1.13-to-1 \\ 
+%Realism&1.56&.135&.35&1.32-to-1 \\
+%Frustration&1.32&.201&.30&1.80-to-1 \\
+%Pleasure&1.29&.214&.29&1.87-to-1 \\
+%Action&1.24&.229&.28&1.99-to-1 \\
+%Disorientation&1.14&.267&.26&2.24-to-1 \\ 
+%Excitement&0.89&.385&.21&2.92-to-1 \\
+%Identification&0.86&.398&.20&3.00-to-1 \\
+%Satisfaction&0.83&.419&.19&3.09-to-1 \\ 
+%Boredom&0.79&.437&.18&3.20-to-1 \\ 
+%Presence&0.53&.601&.12&3.91-to-1 \\
+%Involvement&0.48&.634&.11&40.4-to-1 \\
+%&&&& \\ 
+%Anderson et al., 2004 \\ \cline{1-1}
+%Action&2.35&.028&.45&1-to-2.61 \\
+%Difficulty&1.00&.327&.21&1.71-to-1 \\
+%Frustration&-0.79&.436&-.17&1.98-to-1 \\
+%Enjoyment&-0.40&.693&-.08&2.39-to-1 \\
+%Violence&5.48&$<.001$&.76&1-to-818 \\
+%\multicolumn{5}{l}{\multirow{2}{90mm}{Pilot test results from \citet{Arriaga:etal:2008} and \citet{Anderson:etal:2004}. Pilot data is largely agnostic between the null and alternative, and in fact sometimes indicates equally strong evidence of certain confounds. {\em Note:} $B_{01}$ ranges from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). Contrary to the authors’ original conclusions, the pilot test has some evidence the games differ in feelings of competence, and fairly substantial evidence that they differ in difficulty. $H_0: |\delta| < .1$; $H_1: \delta \sim Cauchy(scale = .5)$. All Bayes factors rounded to two significant digits.}}
+%\end{tabular}
 \label{ArriagaAndersonPilot}
 \end{table}
 
 % Is this table legible?
 \begin{table}
-\caption{Pilot test from \citet{Valadez:Ferguson:2012}. Pilot testing suggests that the conditions are different, not equivalent, on ratings. $BF_{01}$ ranges from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). $H_0: \delta \sim \mbox{Uniform[-0.1, 0.1]}$; $H_1: \delta \sim \mbox{Cauchy(scale = .5)}$. All Bayes factors rounded to two significant digits.}
-\begin{tabular}{l@{\hspace{1cm}} cc@{\hspace{1cm}} cc@{\hspace{1cm}} cc}
-& \multicolumn{2}{c}{Difficulty} & \multicolumn{2}{c}{Pace} & \multicolumn{2}{c}{Competitiveness} \\
-\cline{2-3} \cline{4-5} \cline{6-7} 
-& $t$ & $BF_{01}$ & $t$ & $BF_{01}$ & $t$ & $BF_{01}$ \\ \hline
-Active vs. Control1 & 1.82 & 1-to-1.3 & 1.31 & 1.3-to-1 & 3.00 & 1-to-7.2 \\
-Active vs. Control2 & -1.47 & 1.1-to-1 & -2.00 & 1-to-1.6 & 0.05 & 2.5-to-1 \\
-Control1 vs. Control2 & -3.45 & 1-to-16 & -3.43 & 1-to-15 & -3.00 & 1-to-7.2 \\
-\end{tabular}
+\caption{Pilot test from \citet{Valadez:Ferguson:2012}.} 
+\includegraphics{Valadez_Ferguson_table.pdf}
+%Pilot testing suggests that the conditions are different, not equivalent, on ratings. $BF_{01}$ ranges from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). $H_0: \delta \sim \mbox{Uniform[-0.1, 0.1]}$; $H_1: \delta \sim \mbox{Cauchy(scale = .5)}$. All Bayes factors rounded to two significant digits.}
+%\begin{tabular}{l@{\hspace{1cm}} cc@{\hspace{1cm}} cc@{\hspace{1cm}} cc}
+%& \multicolumn{2}{c}{Difficulty} & \multicolumn{2}{c}{Pace} & \multicolumn{2}{c}{Competitiveness} \\
+%\cline{2-3} \cline{4-5} \cline{6-7} 
+%& $t$ & $BF_{01}$ & $t$ & $BF_{01}$ & $t$ & $BF_{01}$ \\ \hline
+%Active vs. Control1 & 1.82 & 1-to-1.3 & 1.31 & 1.3-to-1 & 3.00 & 1-to-7.2 \\
+%Active vs. Control2 & -1.47 & 1.1-to-1 & -2.00 & 1-to-1.6 & 0.05 & 2.5-to-1 \\
+%Control1 vs. Control2 & -3.45 & 1-to-16 & -3.43 & 1-to-15 & -3.00 & 1-to-7.2 \\
+%\end{tabular}
 \label{ValadezFergusonPilot}
 \end{table}
 
-% Having trouble getting this to fit the page between the enormous caption, titanic first column, number of rows...
 \begin{table}
-\caption{Bayesian re-analysis of select studies claiming to find boundaries of violent game effects on affect, behavior, and cognition. Some studies present only modest evidence against the effect, and several indicate evidence for the effect despite nonsignificant p-values. $BF_{01}$ = evidence for $H_0: \delta = 0$ compared to $HA_1: \delta \sim$ Cauchy(scale = 0.4). $BF_{02}$ = evidence for $H_0: \rho = 0$ compared to $H_{A2}: \rho \sim \mbox{Normal}(\mu, \sigma)$, with $\mu$ and $\sigma$ taken from \citet{Anderson:etal:2010}. Bayes factors range from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). All Bayes factors rounded to two significant digits.}
-\begin{tabular}{p{8cm}ccccc}
-&r   &95\% CI&n  &$BF_{01}$ & $BF_{02}$ \\
-Aggressive affect&&&&& \\
-Anderson et al., 2010, Meta-analysis&.29&[.25, .34]&2513&& \\
-Valadez \& Ferguson, 2012, interaction effect&.22&[.02, .39]&100&1-to-2.3&1-to-8.5 \\
-Przybylski et al., 2014, Study 1&.00&[-.19, .20]&99&3.0-to-1&62-to-1 \\
-Przybylski et al., 2014, Study 2&.08&[-.11, .27]&101&2.3-to-1&7.1-to-1 \\
-Przybylski et al., 2014, Study 5&.03&[-.16, .22]&109&3.0-to-1&38-to-1 \\
-Ivory \& Kalyanaraman, 2007&.13&[-.05, .30]&120&1.44-to-1&1.8-to-1 \\
-Aggressive Behavior&&&&& \\
-Anderson et al., 2010, Meta-analysis&.21&[.17, .25]&1454&& \\
-Elson et al., 2014, Noise Intensity&.20&[-.02, .39]&84&1-to-1.3&1-to-5.1 \\
-Elson et al., 2014, Noise Duration&.11&[-.11, .31]&84&1.9-to-1&1-to-1.1 \\
-Ferguson et al. 2008, Study 1 – Random assignment, Noise Intensity&.02&[-.26, .30]&50&2.3-to-1&2.4-to-1 \\
-Ferguson \& Rueda, 2010 – Violent vs. nonviolent game&.01&[-.21, .23]&77&2.7-to-1&4.4-to-1 \\
-Adachi \& Willoughby, 2011b, Experiment 1&.00&[-.30, .30]&42&2.2-to-1&2.4-to-1 \\
-Adachi \& Willoughby, 2011b, Experiment 2&.03&[-.22, .28]&60&2.4-to-1&2.5-to-1 \\
-Tear \& Nielsen, 2014, hurting behavior in Tangram task&.01&[-.17, .19]&120&3.6-to-1&9.0-to-1 \\
-Aggressive Cognition&&&&& \\
-Anderson et al., 2010, Meta-analysis&.22&[.18, .25]&2887&& \\
-Ivory \& Kalyanaraman, 2007&-.08&[-.25, .11]&120&2.4-to-1&130-to-1 \\
-\end{tabular}
+\caption{Bayesian re-analysis of null results.}
+\includegraphics[width=\textwidth, scale=1]{Main Study Results.pdf}
+%Some studies present only modest evidence against the effect, and several indicate evidence for the effect despite nonsignificant p-values. $BF_{01}$ = evidence for $H_0: \delta = 0$ compared to $HA_1: \delta \sim$ Cauchy(scale = 0.4). $BF_{02}$ = evidence for $H_0: \rho = 0$ compared to $H_{A2}: \rho \sim \mbox{Normal}(\mu, \sigma)$, with $\mu$ and $\sigma$ taken from \citet{Anderson:etal:2010}. Bayes factors range from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). All Bayes factors rounded to two significant digits.}
+%\begin{tabular}{p{8cm}ccccc}
+%&r   &95\% CI&n  &$BF_{01}$ & $BF_{02}$ \\
+%Aggressive affect&&&&& \\
+%Anderson et al., 2010, Meta-analysis&.29&[.25, .34]&2513&& \\
+%Valadez \& Ferguson, 2012, interaction effect&.22&[.02, .39]&100&1-to-2.3&1-to-8.5 \\
+%Przybylski et al., 2014, Study 1&.00&[-.19, .20]&99&3.0-to-1&62-to-1 \\
+%Przybylski et al., 2014, Study 2&.08&[-.11, .27]&101&2.3-to-1&7.1-to-1 \\
+%Przybylski et al., 2014, Study 5&.03&[-.16, .22]&109&3.0-to-1&38-to-1 \\
+%Ivory \& Kalyanaraman, 2007&.13&[-.05, .30]&120&1.44-to-1&1.8-to-1 \\
+%Aggressive Behavior&&&&& \\
+%Anderson et al., 2010, Meta-analysis&.21&[.17, .25]&1454&& \\
+%Elson et al., 2014, Noise Intensity&.20&[-.02, .39]&84&1-to-1.3&1-to-5.1 \\
+%Elson et al., 2014, Noise Duration&.11&[-.11, .31]&84&1.9-to-1&1-to-1.1 \\
+%Ferguson et al. 2008, Study 1 – Random assignment, Noise Intensity&.02&[-.26, .30]&50&2.3-to-1&2.4-to-1 \\
+%Ferguson \& Rueda, 2010 – Violent vs. nonviolent game&.01&[-.21, .23]&77&2.7-to-1&4.4-to-1 \\
+%Adachi \& Willoughby, 2011b, Experiment 1&.00&[-.30, .30]&42&2.2-to-1&2.4-to-1 \\
+%Adachi \& Willoughby, 2011b, Experiment 2&.03&[-.22, .28]&60&2.4-to-1&2.5-to-1 \\
+%Tear \& Nielsen, 2014, hurting behavior in Tangram task&.01&[-.17, .19]&120&3.6-to-1&9.0-to-1 \\
+%Aggressive Cognition&&&&& \\
+%Anderson et al., 2010, Meta-analysis&.22&[.18, .25]&2887&& \\
+%Ivory \& Kalyanaraman, 2007&-.08&[-.25, .11]&120&2.4-to-1&130-to-1 \\
+%\end{tabular}
 \label{mainStudyResults}
 \end{table}
 
 \begin{table}
 \caption{Bayes factors for each effect size as calculated by \citet[study 2, table 2]{Elson:etal:2014}.}
-\begin{tabular}{lccc}
-Quantification&r&$BF_{01}$&$BF_{02}$ \\ \hline
-Mean volume&.20&1-to-1.2&1-to-4.8 \\
-Mean volume after wins&.13&1.6-to-1&1-to-1.6 \\
-Mean volume after losses &.22&1-to-1.7&1-to-7.2 \\
-Mean duration &.11&2.0-to-1&1-to-1.0 \\
-Mean duration after wins&.05&2.6-to-1&2.7-to-1 \\
-Mean duration after losses &.14&1.5-to-1&1-to-1.9 \\
-Mean volume x duration &.18&1.0-to-1&1-to-3.7 \\
-Mean volume x sqrt(duration)&.18&1.0-to-1&1-to-3.6 \\
-Mean volume x ln(duration) &.16&1.3-to-1&1-to-2.5 \\ 
-Count high volume settings &.40&1-to-140&1-to-279 \\
-Count high duration settings &.05&2.6-to-1&2.8-to-1 \\
-First-trial volume &.03&2.7-to-1&3.5-to-1 \\ 
-First-trial duration&.01&2.8-to-1&4.9-to-1 \\
-Count low volume settings&-.34&1-to-19&1400-to-1 \\
-\end{tabular}
+\centering
+\includegraphics[width=\textwidth, scale=2]{Elson_CRTT-hacking.pdf}
+%\begin{tabular}{lccc}
+%Quantification&r&$BF_{01}$&$BF_{02}$ \\ \hline
+%Mean volume&.20&1-to-1.2&1-to-4.8 \\
+%Mean volume after wins&.13&1.6-to-1&1-to-1.6 \\
+%Mean volume after losses &.22&1-to-1.7&1-to-7.2 \\
+%Mean duration &.11&2.0-to-1&1-to-1.0 \\
+%Mean duration after wins&.05&2.6-to-1&2.7-to-1 \\
+%Mean duration after losses &.14&1.5-to-1&1-to-1.9 \\
+%Mean volume x duration &.18&1.0-to-1&1-to-3.7 \\
+%Mean volume x sqrt(duration)&.18&1.0-to-1&1-to-3.6 \\
+%Mean volume x ln(duration) &.16&1.3-to-1&1-to-2.5 \\ 
+%Count high volume settings &.40&1-to-140&1-to-279 \\
+%Count high duration settings &.05&2.6-to-1&2.8-to-1 \\
+%First-trial volume &.03&2.7-to-1&3.5-to-1 \\ 
+%First-trial duration&.01&2.8-to-1&4.9-to-1 \\
+%Count low volume settings&-.34&1-to-19&1400-to-1 \\
+%\end{tabular}
 \label{ElsonCRTTHacking}
 \end{table}
 
