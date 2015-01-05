@@ -10,8 +10,9 @@
 %	Import tables from Excel into LaTeX? Or are we going to try to roll them w/in LaTeX?
 %	I've been thinking it might be nice to have a graph of P(y|theta)
 
-\documentclass[fignum,nobf,man]{apa}
-\usepackage{apacite}
+%\documentclass[fignum,nobf,man]{apa}
+\documentclass[man]{apa6}
+\usepackage[natbibapa]{apacite}
 \usepackage{bm}
 \usepackage{pcl}
 \usepackage{graphicx}
@@ -20,8 +21,8 @@
 \usepackage[american]{babel}
 %  Adding caption package in attempt to add `normal' table captions, too
 %\usepackage{caption} % i don't think it's actually working, think we have package conflct
-\usepackage{multirow}
-\usepackage{pdfpages}
+%\usepackage{multirow}
+%\usepackage{pdfpages}
 
 % Need better shortTitle
 \rightheader{Bayesian Reanalysis of Violent Media}
@@ -287,7 +288,7 @@ With Bayes factors, there is no such dichotomization or sufficient threshold; in
 
 % Is this table legible?
 \begin{table}
-\caption{Pilot test from \citet{Valadez:Ferguson:2012}.} 
+\caption{Pilot test from Valadez and Ferguson (2012).} 
 \includegraphics[width=\textwidth]{Valadez_Ferguson_table_2.pdf}
 %Pilot testing suggests that the conditions are different, not equivalent, on ratings. $BF_{01}$ ranges from 1-to-$\infty$ (perfect evidence for alternative) to $\infty$-to-1 (perfect evidence for null). $H_0: \delta \sim \mbox{Uniform[-0.1, 0.1]}$; $H_1: \delta \sim \mbox{Cauchy(scale = .5)}$. All Bayes factors rounded to two significant digits.}
 %\begin{tabular}{l@{\hspace{1cm}} cc@{\hspace{1cm}} cc@{\hspace{1cm}} cc}
@@ -355,5 +356,6 @@ With Bayes factors, there is no such dichotomization or sufficient threshold; in
 \end{table}
 
 \newpage
+\bibliographystyle{apacite}
 \bibliography{database}
 \end{document}
