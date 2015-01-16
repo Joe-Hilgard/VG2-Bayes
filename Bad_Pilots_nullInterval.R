@@ -30,20 +30,20 @@ require(BayesFactor)
 ###
 # Arriaga et al., 2008 and the insufficient pilot test
 ###
-equivTestPaired(20, 2.63, NULL) #Difficulty
-equivTestPaired(20, 2.27, NULL) #Competence
-equivTestPaired(20, 1.67, NULL) #Discomfort
-equivTestPaired(20, 1.56, NULL) #Realism
-equivTestPaired(20, 1.32, NULL) #Frustration
-equivTestPaired(20, 1.29, NULL) #Pleasure
-equivTestPaired(20, 1.24, NULL) #Action
-equivTestPaired(20, 1.14, NULL) #Disorientation
-equivTestPaired(20, .89, NULL) #Excitement
-equivTestPaired(20, .86, NULL) #Identification
-equivTestPaired(20, .83, NULL) #Satisfaction
-equivTestPaired(20, .79, NULL) #Boredom
-equivTestPaired(20, .53, NULL) #Presence
-equivTestPaired(20, .48, NULL) #Involvement
+equivTestPaired(20, 2.63, c(-.1, .1)) #Difficulty
+equivTestPaired(20, 2.27, c(-.1, .1)) #Competence
+equivTestPaired(20, 1.67, c(-.1, .1)) #Discomfort
+equivTestPaired(20, 1.56, c(-.1, .1)) #Realism
+equivTestPaired(20, 1.32, c(-.1, .1)) #Frustration
+equivTestPaired(20, 1.29, c(-.1, .1)) #Pleasure
+equivTestPaired(20, 1.24, c(-.1, .1)) #Action
+equivTestPaired(20, 1.14, c(-.1, .1)) #Disorientation
+equivTestPaired(20, .89, c(-.1, .1)) #Excitement
+equivTestPaired(20, .86, c(-.1, .1)) #Identification
+equivTestPaired(20, .83, c(-.1, .1)) #Satisfaction
+equivTestPaired(20, .79, c(-.1, .1)) #Boredom
+equivTestPaired(20, .53, c(-.1, .1)) #Presence
+equivTestPaired(20, .48, c(-.1, .1)) #Involvement
 
 #####
 # Valadez & Ferguson and the insufficient pilot test
@@ -52,32 +52,33 @@ equivTestPaired(20, .48, NULL) #Involvement
 
 # Cell sizes: RDR-v, 15; RDR-nv, 10; FIFA, 15.
 # RDR "violent" vs RDR "nonviolent"
-equivTest(15, 10, 1.82, NULL) # Difficulty
-equivTest(15, 10, 1.31, NULL) # Pace
-equivTest(15, 10, 3.00, NULL) # Competitveness
+equivTest(15, 10, 1.82, c(-.1, .1)) # Difficulty
+equivTest(15, 10, 1.31, c(-.1, .1)) # Pace
+equivTest(15, 10, 3.00, c(-.1, .1)) # Competitveness
 # RDR "violent" vs FIFA
-equivTest(15, 10, 1.47, NULL) # Difficulty
-equivTest(15, 10, 2.00, NULL) # Pace
-equivTest(15, 10, .047, NULL) # Competitveness
+equivTest(15, 10, 1.47, c(-.1, .1)) # Difficulty
+equivTest(15, 10, 2.00, c(-.1, .1)) # Pace
+equivTest(15, 10, .047, c(-.1, .1)) # Competitveness
 # RDR "nonviolent" vs FIFA 
-equivTest(15, 10, 3.45, NULL) # Difficulty
-equivTest(15, 10, 3.43, NULL) # Pace
-equivTest(15, 10, 3.00, NULL) # Competitveness
+equivTest(15, 10, 3.45, c(-.1, .1)) # Difficulty
+equivTest(15, 10, 3.43, c(-.1, .1)) # Pace
+equivTest(15, 10, 3.00, c(-.1, .1)) # Competitveness
 
 ###
 # Adachi & Willoughby 2010 and the insufficient pilot test
 ###
 # pilot 1, 14 subjects (paired t-test)
-equivTestPaired(14, 4.39, NULL) # Violence?
-equivTestPaired(14, -.46, NULL) # Competition
-equivTestPaired(14, .59, NULL)  # Difficulty
-equivTestPaired(14, .8, NULL)   # Pace
+equivTestPaired(14, 4.39, c(-.1, .1)) # Violence?
+equivTestPaired(14, -.46, c(-.1, .1)) # Competition
+equivTestPaired(14, .59, c(-.1, .1))  # Difficulty
+equivTestPaired(14, .8, c(-.1, .1))   # Pace
 
 # experiment 1, 21 subs in 2 cells each
-equivTest(21, 21, 7.858, NULL) # Violence?
-equivTest(21, 21, -.387, NULL) # Competition
-equivTest(21, 21, -1.59, NULL)  # Difficulty
-equivTest(21, 21, .89, NULL)   # Pace
+equivTest(21, 21, 7.858, c(-.1, .1)) # Violence?
+equivTest(21, 21, -.387, c(-.1, .1)) # Competition
+equivTest(21, 21, -1.59, c(-.1, .1))  # Difficulty
+equivTest(21, 21, .89, c(-.1, .1))   # Pace
+
 
 ###
 # Anderson et al., 2004 and the insufficient pilot test
@@ -101,11 +102,11 @@ t.fru = welch.t(4.25, 4.75, sqrt(2.38), sqrt(2.38), 12, 12)
 # Violence
 t.vio = welch.t(4.86, 1.41, sqrt(2.38), sqrt(2.38), 12, 12)
 # Bayes factors: (inverted so they give BF01 instead of BF10)
-invertBF(equivTest(12, 12, t.dif, nullInterval=NULL))
-invertBF(equivTest(12, 12, t.enj, nullInterval=NULL))
-invertBF(equivTest(12, 12, t.act, nullInterval=NULL)) # BF here favors the alternative 2.61-to-1
-invertBF(equivTest(12, 12, t.fru, nullInterval=NULL))
-invertBF(equivTest(12, 12, t.vio, nullInterval=NULL))
+invertBF(equivTest(12, 12, t.dif, nullInterval=c(-.1, .1)))
+invertBF(equivTest(12, 12, t.enj, nullInterval=c(-.1, .1)))
+invertBF(equivTest(12, 12, t.act, nullInterval=c(-.1, .1))) # BF here favors the alternative 2.61-to-1
+invertBF(equivTest(12, 12, t.fru, nullInterval=c(-.1, .1)))
+invertBF(equivTest(12, 12, t.vio, nullInterval=c(-.1, .1)))
 
 # Glider Pro & Marathon 2 might be equivalent on difficulty, enjoyment, frustration, but might differ in pace of action
 # Experiments 2 and 3 of this manuscript have larger sample sizes and use similar manipulations.
