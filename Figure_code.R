@@ -169,7 +169,7 @@ dev.off()
 ## Figure 2:
 
 # Prepare plot space
-pdf('BFFigure2.pdf') # attempting to scale approximately to A4 dimensions #width=12,height=24) 
+pdf('BFFigure2.pdf', width=8, height=4) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(1,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
 
 # BF10 vs observed effect size:
