@@ -9,7 +9,7 @@ source("generate_figure_data.R")
 pdf('BFFigure.pdf', width=8, height=11) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(3,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
 # pick hypothetical value of obs
-obs = .35
+obs = .1
 
 # Plotting, row 1
 # Priors:
@@ -32,13 +32,13 @@ lines(z,Ppred.s,lty=3,lwd=2,col='darkred') # data given point-alternative
 abline(v=obs,col='grey')
 points(obs,EDens(obs,N.s),cex=1.3,pch=19)
 points(obs,PDens(obs,N.s),cex=1.3,pch=19)
-PDens(obs,N.s)/EDens(obs,N.s)
+EDens(obs,N.s)/PDens(obs,N.s)
 #points(obs,CDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
 #points(obs,NDens(obs, N), cex=1.3, pch=19, col='darkred')
 #lines(z, Cpred,lty=2,lwd=2,col='darkgreen') # data given JZS prior
 #lines(z, Npred, lty=3, lwd=2, col='darkred') # data given Anderson's hypothesis
-text(-.75,.21,expression(paste("Model ",M[0])),adj=1)
-text(.9,.375,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+text(-.6,.37,expression(paste("Model ",M[0])),adj=1)
+text(.9,.21,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
 # points(obs[2],EDens(obs[2],N),cex=1.3,pch=21,bg='white',lwd=2)
 # points(obs[2],CDens(obs[2],N),cex=1.3,pch=21,col='darkgreen',bg='white',lwd=2)
 mtext(side=3,adj=.05,cex=1.5,'B.',line=-1.5)
@@ -61,8 +61,8 @@ lines(z,Cpred.s,lty=3,lwd=2,col='darkred') # data given JZS-prior alternative
 abline(v=obs,col='grey')
 points(obs,EDens(obs,N.s),cex=1.3,pch=19)
 points(obs,CDens(obs,N.s),cex=1.3,pch=19)
-text(-.47,.21,expression(paste("Model ",M[0])),adj=1)
-text(.65,.1,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+text(-.6,.37,expression(paste("Model ",M[0])),adj=1)
+text(.65,.125,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
 mtext(side=3,adj=.05,cex=1.5,'D.',line=-1.5)
 EDens(obs,N.s)/CDens(obs,N.s)
 
@@ -73,9 +73,9 @@ lines(z,Ppred.l,lty=3,lwd=2,col='darkred') # data given point-alternative
 abline(v=obs,col='grey')
 points(obs,EDens(obs,N.l),cex=1.3,pch=19)
 points(obs,PDens(obs,N.l),cex=1.3,pch=19)
-PDens(obs,N.l)/EDens(obs,N.l)
-text(-.35,.04,expression(paste("Model ",M[0])),adj=1)
-text(.9,.338,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+EDens(obs,N.l)/PDens(obs,N.l)
+text(-.35,.30,expression(paste("Model ",M[0])),adj=1)
+text(.9,.05,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
 mtext(side=3,adj=.05,cex=1.5,'E.',line=-1.5)
 # H0 vs vague alternative with big N
 plot(z,Epred.l,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
@@ -83,8 +83,8 @@ lines(z,Cpred.l,lty=3,lwd=2,col='darkred') # data given JZS-prior alternative
 abline(v=obs,col='grey')
 points(obs,EDens(obs,N.l),cex=1.3,pch=19)
 points(obs,CDens(obs,N.l),cex=1.3,pch=19)
-text(-.4,.05,expression(paste("Model ",M[0])),adj=1)
-text(.5,.08,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+text(-.3,.3,expression(paste("Model ",M[0])),adj=1)
+text(.5,.07,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
 mtext(side=3,adj=.05,cex=1.5,'F.',line=-1.5)
 EDens(obs,N.l)/CDens(obs,N.l)
 
@@ -95,22 +95,6 @@ dev.off()
 # Prepare plot space
 pdf('BFFigure2.pdf', width=8, height=4) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(1,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
-
-# BF10 vs observed effect size:
-plot(x=effect, xlab = expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),
-     y=1/BFList.s, log="y", ylim=c(1/12, 12)
-     , ylab="Bayes factor (alternative/null)",
-     typ='l',
-     yaxt='n'
-     )
-axis(2, at=c(.0001, .001, .01, .1, 1, 10), 
-     labels=c(".0001", ".001", ".01", ".1", "1", "10"),
-     )
-abline(h=1, col='grey')
-#lines(x=effect, y=BFList.m, lty=2, col=2)
-#lines(x=effect, y=BFList.l, lty=3, col=3)
-lines(x=effect, y=1/BFList.xl, lty=2)
-mtext(side=3,adj=.05,cex=1.5,'A.',line=-1.5)
 
 # BF20 vs observed effect size:
 plot(x=effectNarrow, xlab = expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),
@@ -128,7 +112,24 @@ lines(x=effectNarrow, y=1/BFList2.s#, lty=2, col="darkred"
 #lines(x=effectNarrow, y=BFList2.m, lty=3, col="darkgreen")
 #lines(x=effectNarrow, y=BFList2.l, lty=4, col="darkgreen")
 #lines(x=effectNarrow, y=BFList2.xl, lty=4, col="darkgreen")
+mtext(side=3,adj=.05,cex=1.5,'A.',line=-1.5)
+
+# BF10 vs observed effect size:
+plot(x=effect, xlab = expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),
+     y=1/BFList.s, log="y", ylim=c(1/12, 12)
+     , ylab="Bayes factor (alternative/null)",
+     typ='l',
+     yaxt='n'
+)
+axis(2, at=c(.0001, .001, .01, .1, 1, 10), 
+     labels=c(".0001", ".001", ".01", ".1", "1", "10"),
+)
+abline(h=1, col='grey')
+#lines(x=effect, y=BFList.m, lty=2, col=2)
+#lines(x=effect, y=BFList.l, lty=3, col=3)
+lines(x=effect, y=1/BFList.xl, lty=2)
 mtext(side=3,adj=.05,cex=1.5,'B.',line=-1.5)
+
 dev.off()
 
 # #################################################
