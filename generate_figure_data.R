@@ -9,7 +9,7 @@ I=length(z)
 
 # Generate estimates
 #Cauchy
-s=.43 # set scale
+s=.4 # set scale
 f=dcauchy(z,0,s) # get density function over interval Z for cauchy w/ scale s
 
 # Epred gives prediction of the null model:
