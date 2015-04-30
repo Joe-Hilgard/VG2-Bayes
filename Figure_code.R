@@ -98,7 +98,7 @@ par(mfrow=c(1,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) #
 # BF20 vs observed effect size:
 plot(x=effectNarrow, xlab = expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),
      y=1/BFList2.l, log="y"#, ylim=c(100000, .00001)
-     , ylab="Bayes factor (alternative/null)",
+     , ylab="Bayes factor (alternative / null)",
      typ='l'
      ,yaxt='n', lty=2
 )
@@ -116,7 +116,7 @@ mtext(side=3,adj=.05,cex=1.5,'A.',line=-1.5)
 # BF10 vs observed effect size:
 plot(x=effect, xlab = expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),
      y=1/BFList.s, log="y", ylim=c(1/12, 12)
-     , ylab="Bayes factor (alternative/null)",
+     , ylab="Bayes factor (alternative / null)",
      typ='l',
      yaxt='n'
 )
