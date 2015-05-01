@@ -117,7 +117,7 @@ BF02(sd=.111111, .110447, lower=-1, meanoftheory=.213171, sdtheory=.026252)
 # Ferguson et al. 2008
 BF02(sd=.145865, .020003, lower=-1, meanoftheory=.213171, sdtheory=.026252)
   # there is argument about what is the actual value
-Bf(sd=1/sqrt(50-3), atanh(.02), lower=-1, meanoftheory=.213171, sdtheory=.026252)
+Bf(sd=1/sqrt(50-3), atanh(.02), lower=-1, meanoftheory=.213171, sdtheory=.02)
 
 # Ferguson & Rueda, Violent vs Nonviolent game
 BF02(sd=.116248, .01, lower=-1, meanoftheory=.213171, sdtheory=.026252)
