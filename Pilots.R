@@ -1,3 +1,7 @@
+# Load packages
+library(BayesFactor)
+library(magrittr)
+
 # Function for pilot test w/ null-equivalent region.
 equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   x = rnorm(N)
@@ -11,21 +15,22 @@ equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
   x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
   y = rnorm(n2)
   y = y/sd(y); y = y - mean(y) # center and scale at 0
-  SE = sqrt(var(x)/n1 + var(y)/n2)
+  # Assume pooled variance of 1 (as we have scaled it as such)
+  # Thus, SE depends only on sample size
+  SE = sqrt(1/n1 + 1/n2)
   y = y + t*SE # center at t*SE
   return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
 }
 #welch's t
 welch.t = function(m1, m2, sd1, sd2, n1, n2) {
-  se_diff = sqrt(sd1^2/n1 + sd2^2/n2)
+  sp = sqrt( ((n1-1)*sd1^2 + (n2-1) * sd2^2) / (n1 + n2 -2) )
+  se_diff = sp * sqrt(1/n1 + 1/n2)
   mean_diff = m1-m2
   return(mean_diff/se_diff)
 }
 invertBF = function(model) {
   return(1/exp(model@bayesFactor[['bf']]))
 }
-# Load in BayesFactor package 
-require(BayesFactor)
 
 ###
 # Arriaga et al., 2008 and the insufficient pilot test
@@ -49,20 +54,39 @@ equivTestPaired(20, .48, NULL) #Involvement
 # Valadez & Ferguson and the insufficient pilot test
 #####
 # t-tests for each pairwise comparison
+# All values as reported in Table 1 (means, SDs, Ns)
 
 # Cell sizes: RDR-v, 15; RDR-nv, 10; FIFA, 15.
 # RDR "violent" vs RDR "nonviolent"
-equivTest(15, 10, 1.82, NULL) # Difficulty
-equivTest(15, 10, 1.31, NULL) # Pace
-equivTest(15, 10, 3.00, NULL) # Competitveness
+  # Difficulty
+t = welch.t(11.5, 9.6, 3.31, 1.89, 15, 10)
+equivTest(15, 10, t, NULL)
+  # Pace
+t = welch.t(12.0, 10.4, 3.38, 2.71, 15, 10)
+equivTest(15, 10, t, NULL) 
+  # Competitveness
+t = welch.t(8.53, 5.60, 3.50, 1.17, 15, 10)
+equivTest(15, 10, t, NULL) 
 # RDR "violent" vs FIFA
-equivTest(15, 10, 1.47, NULL) # Difficulty
-equivTest(15, 10, 2.00, NULL) # Pace
-equivTest(15, 10, .047, NULL) # Competitveness
+  # Difficulty
+t = welch.t(11.5, 13.2, 3.31, 3.01, 15, 15)
+equivTest(15, 10, t, NULL) 
+  # Pace
+t = welch.t(12.0, 14.3, 3.38, 2.89, 15, 15)
+equivTest(15, 10, t, NULL) 
+  # Competitveness
+t = welch.t(8.53, 8.47, 3.50, 3.42, 15, 15)
+equivTest(15, 10, t, NULL) 
 # RDR "nonviolent" vs FIFA 
-equivTest(15, 10, 3.45, NULL) # Difficulty
-equivTest(15, 10, 3.43, NULL) # Pace
-equivTest(15, 10, 3.00, NULL) # Competitveness
+  # Difficulty
+t = welch.t(9.6, 13.2, 1.89, 3.01, 10, 15)
+equivTest(15, 10, t, NULL) 
+  # Pace
+t = welch.t(10.4, 14.3, 2.71, 2.89, 10, 15)
+equivTest(15, 10, t, NULL) 
+  # Competitveness
+t = welch.t(5.60, 8.47, 1.17, 3.42, 10, 15)
+equivTest(15, 10, t, NULL) 
 
 ###
 # Adachi & Willoughby 2010 and the insufficient pilot test
