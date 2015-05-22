@@ -18,6 +18,8 @@ equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   diff = diff / sd(diff) * sqrt(N) # rescale 
   diff = diff - mean(diff) + t # recenter
   y = x + diff
+  # check that the t-value reproduces appropriately
+  stopifnot(round(t.test(y, x, paired=T)$statistic, 2) == round(t, 2)) 
   return(ttestBF(x, y, nullInterval=nullInterval, paired=T, rscale=rscale))
 }
 #welch's t
@@ -33,18 +35,18 @@ welch.t = function(m1, m2, sd1, sd2, n1, n2) {
 ###
 equivTestPaired(20, 2.63, NULL) #Difficulty
 equivTestPaired(20, 2.27, NULL) #Competence
-equivTestPaired(20, 1.67, NULL) #Discomfort
-equivTestPaired(20, 1.56, NULL) #Realism
-equivTestPaired(20, 1.32, NULL) #Frustration
-equivTestPaired(20, 1.29, NULL) #Pleasure
-equivTestPaired(20, 1.24, NULL) #Action
-equivTestPaired(20, 1.14, NULL) #Disorientation
-equivTestPaired(20, .89, NULL) #Excitement
-equivTestPaired(20, .86, NULL) #Identification
-equivTestPaired(20, .83, NULL) #Satisfaction
-equivTestPaired(20, .79, NULL) #Boredom
-equivTestPaired(20, .53, NULL) #Presence
-equivTestPaired(20, .48, NULL) #Involvement
+1/equivTestPaired(20, 1.67, NULL) #Discomfort
+1/equivTestPaired(20, 1.56, NULL) #Realism
+1/equivTestPaired(20, 1.32, NULL) #Frustration
+1/equivTestPaired(20, 1.29, NULL) #Pleasure
+1/equivTestPaired(20, 1.24, NULL) #Action
+1/equivTestPaired(20, 1.14, NULL) #Disorientation
+1/equivTestPaired(20, .89, NULL) #Excitement
+1/equivTestPaired(20, .86, NULL) #Identification
+1/equivTestPaired(20, .83, NULL) #Satisfaction
+1/equivTestPaired(20, .79, NULL) #Boredom
+1/equivTestPaired(20, .53, NULL) #Presence
+1/equivTestPaired(20, .48, NULL) #Involvement
 
 #####
 # Valadez & Ferguson and the insufficient pilot test
@@ -55,33 +57,33 @@ equivTestPaired(20, .48, NULL) #Involvement
 # Cell sizes: RDR-v, 15; RDR-nv, 10; FIFA, 15.
 # RDR "violent" vs RDR "nonviolent"
   # Difficulty
-t = welch.t(11.5, 9.6, 3.31, 1.89, 15, 10)
+(t = welch.t(11.5, 9.6, 3.31, 1.89, 15, 10))
 equivTest(15, 10, t, NULL)
   # Pace
-t = welch.t(12.0, 10.4, 3.38, 2.71, 15, 10)
-equivTest(15, 10, t, NULL) 
+(t = welch.t(12.0, 10.4, 3.38, 2.71, 15, 10))
+1/equivTest(15, 10, t, NULL) 
   # Competitveness
-t = welch.t(8.53, 5.60, 3.50, 1.17, 15, 10)
+(t = welch.t(8.53, 5.60, 3.50, 1.17, 15, 10))
 equivTest(15, 10, t, NULL) 
 # RDR "violent" vs FIFA
   # Difficulty
-t = welch.t(11.5, 13.2, 3.31, 3.01, 15, 15)
-equivTest(15, 10, t, NULL) 
+(t = welch.t(11.5, 13.2, 3.31, 3.01, 15, 15))
+1/equivTest(15, 10, t, NULL) 
   # Pace
-t = welch.t(12.0, 14.3, 3.38, 2.89, 15, 15)
+(t = welch.t(12.0, 14.3, 3.38, 2.89, 15, 15))
 equivTest(15, 10, t, NULL) 
   # Competitveness
-t = welch.t(8.53, 8.47, 3.50, 3.42, 15, 15)
-equivTest(15, 10, t, NULL) 
+(t = welch.t(8.53, 8.47, 3.50, 3.42, 15, 15))
+1/equivTest(15, 10, t, NULL) 
 # RDR "nonviolent" vs FIFA 
   # Difficulty
-t = welch.t(9.6, 13.2, 1.89, 3.01, 10, 15)
+(t = welch.t(9.6, 13.2, 1.89, 3.01, 10, 15))
 equivTest(15, 10, t, NULL) 
   # Pace
-t = welch.t(10.4, 14.3, 2.71, 2.89, 10, 15)
+(t = welch.t(10.4, 14.3, 2.71, 2.89, 10, 15))
 equivTest(15, 10, t, NULL) 
   # Competitveness
-t = welch.t(5.60, 8.47, 1.17, 3.42, 10, 15)
+(t = welch.t(5.60, 8.47, 1.17, 3.42, 10, 15))
 equivTest(15, 10, t, NULL) 
 
 ###
@@ -90,24 +92,17 @@ equivTest(15, 10, t, NULL)
 # pilot 1, 14 subjects (paired t-test)
 # F-tests provided in Table 1. Square-root taken to convert to t statistic
 equivTestPaired(14, sqrt(19.31), NULL)  # Violence
-equivTestPaired(14, -sqrt(0.21), NULL)  # Competition
-equivTestPaired(14, sqrt(0.35), NULL)   # Difficulty
-equivTestPaired(14, sqrt(0.64), NULL)   # Pace
+1/equivTestPaired(14, -sqrt(0.21), NULL)  # Competition
+1/equivTestPaired(14, sqrt(0.35), NULL)   # Difficulty
+1/equivTestPaired(14, sqrt(0.64), NULL)   # Pace
 
 # experiment 1, 21 subs in 2 cells each
 equivTest(21, 21, sqrt(61.75), NULL)  # Violence
-equivTest(21, 21, -sqrt(0.15), NULL)  # Competition
-equivTest(21, 21, -sqrt(2.54), NULL)  # Difficulty
-equivTest(21, 21, -sqrt(2.56), NULL)  # Pace
-
-# compare against Welch's t-test just for kicks
-# Violence
-t = welch.t(5.14, 2.05, 1.35, 1.20, 21, 21)
-equivTest(21, 21, t, NULL) 
-# Competition
-t = welch.t(5.00, 5.19, 0.99, 1.19, 21, 21)
-equivTest(21, 21, t, NULL) 
-# answers seem quite similar whether using F-stat or reported means & SDs. That's nice.
+1/equivTest(21, 21, -sqrt(0.15), NULL)  # Competition
+1/equivTest(21, 21, -sqrt(2.54), NULL)  # Difficulty
+1/equivTest(21, 21, -sqrt(2.56), NULL)  # Pace 
+# Note that using means&SDs gets you a different answer 
+  # presumably b/c of the Gender variable.
 
 ###
 # Anderson et al., 2004 and the insufficient pilot test
@@ -132,10 +127,10 @@ t.fru = welch.t(4.25, 4.75, sqrt(2.38), sqrt(2.38), 12, 12)
 # Violence
 t.vio = welch.t(4.86, 1.41, sqrt(2.38), sqrt(2.38), 12, 12)
 # Bayes factors: 
-1/equivTest(12, 12, t.dif, nullInterval=NULL)
-1/equivTest(12, 12, t.enj, nullInterval=NULL)
 equivTest(12, 12, t.act, nullInterval=NULL) # BF here favors the alternative 2.41-to-1
+1/equivTest(12, 12, t.dif, nullInterval=NULL)
 1/equivTest(12, 12, t.fru, nullInterval=NULL)
+1/equivTest(12, 12, t.enj, nullInterval=NULL)
 equivTest(12, 12, t.vio, nullInterval=NULL)
 
 # Glider Pro & Marathon 2 might be equivalent on difficulty, enjoyment, frustration, but might differ in pace of action

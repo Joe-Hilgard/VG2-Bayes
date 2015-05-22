@@ -32,7 +32,8 @@ esciTest = function(r, n, rscale, paired=F) {
   else return(equivTestPaired(N=n, t=t, rscale=rscale))
 } 
 # Why do esciTest(.4, 40, .4) and esciTest(.4, 40, .4, paired=T)
-# return different values? Theoretically/mathematically speaking.
+  # return different values? Theoretically/mathematically speaking.
+  # Proportion of error variance changes for between vs within designs?
 # welch's t
 welch.t = function(m1, m2, sd1, sd2, n1, n2) {
   sp = sqrt( ((n1-1)*sd1^2 + (n2-1) * sd2^2) / (n1 + n2 -2) )
@@ -40,10 +41,28 @@ welch.t = function(m1, m2, sd1, sd2, n1, n2) {
   mean_diff = m1-m2
   return(mean_diff/se_diff)
 }
-pool.sd = function (sds, ns) {
+pool.sd = function(sds, ns) {
   SSlist = sds^2 %*% (ns-1)
   pool.var = sum(SSlist) / sum(ns-1)
   return(sqrt(pool.var))
+}
+# for between-subjects tests only
+t2d = function(t, n1, n2) {
+  d = 2*t / sqrt(n1 + n2 - 2) # equation from http://www.uccs.edu/~lbecker/
+  # variance of d from http://stats.stackexchange.com/questions/8487/how-do-you-calculate-confidence-intervals-for-cohens-d
+  d.var = ( (n1+n2)/(n1*n2) + d^2 / (2*(n1+n2-2)) ) * ( (n1 + n2)/(n1 + n2 - 2) )
+  d.se = sqrt(d.var)
+  CI = c(d - 1.96*d.se, d + 1.96*d.se)
+  return(list("d"=d, "d.CI"=CI))
+}
+# convert effect size r to d
+# from http://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf
+r2d = function(r, n1, n2) {
+  d = 2*r / sqrt(1 - r^2) 
+  d.var = ( (n1+n2)/(n1*n2) + d^2 / (2*(n1+n2-2)) ) * ( (n1 + n2)/(n1 + n2 - 2) )
+  d.se = sqrt(d.var)
+  CI = c(d - 1.96*d.se, d + 1.96*d.se)
+  return(list("d"=d, "d.CI"=CI))
 }
 # This function just takes the result from the D-C calculator and inverts it
 # could also use my equivTest function but that requires the exact per-cell N
@@ -58,12 +77,14 @@ BF02 = function(mean, sd, lower, meanoftheory, sdtheory) {
 # Some error may be introduced via assumption of equal sample sizes.
 # This is the best we get given the numbers made available, people. Share your data!
 
-# Valdez & Ferguson, interaction effect as originally reported
+# Valadez & Ferguson, interaction effect as originally reported
 esciTest(.17, 100, .4)
 1/esciTest(.17, 100, .4)
+r2d(.17, 18+15, 14+14+21+18)
 # Valadez & Ferguson, interaction effect violent (RDR either version) vs nonviolent (FIFA)
 esciTest(.22, 100, .4) 
 1/esciTest(.22, 100, .4)
+r2d(.22, 18+14+15+21, 14+18)
 
 # Przybylski et al. 2014.
 # Numbers retrieved in personal correspondence 5/13/2014
@@ -71,36 +92,44 @@ esciTest(.22, 100, .4)
 # Przybylski et al., Study 1
 esciTest(.004, 99, .4)
 1/esciTest(.004, 99, .4)
+r2d(.004, 50, 49) # assuming nearly-equal samples
 # Przybylski et al., Study 2
 esciTest(-.08, 101, .4) 
 1/esciTest(-.08, 101, .4)
+r2d(-.08, 50, 51) # assuming nearly-equal samples
 # Pryzyblski et al., Study 5
   # using standardized regression weight as effect size r
   # reported on p450, left column, last paragraph 
 esciTest(.03, 109, .4)
 1/esciTest(.03, 109, .4)
+r2d(.03, 55, 54)
 # Ivory & Kalyanaraman, 2007
 # using F-value reported in Table 1, assuming equal sample sizes
 equivTest(60, 60, sqrt(3.83), rscale = .4)
 1/equivTest(60, 60, sqrt(3.83), rscale = .4)
+t2d(sqrt(3.83), 60, 60)
 
 # Aggressive behavior
 # Elson et al. 2013 noise intensity
 equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
 1/equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
+t2d(sqrt(3.28), 42, 42)
 # Elson et al. 2013 noise duration
 equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
 1/equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
+t2d(sqrt(.95), 42, 42)
 
 # Ferguson et al. 2008
 # As I had originally conducted it based on the p-value reported in Table 1:
 tval = qt(.55, 50-2) # get t-value according to p=.90, two-tailed
 equivTest(26, 24, tval, rscale=.4)
 1/equivTest(26, 24, tval, rscale=.4)
+t2d(tval, 26, 24)
 # As Ferguson has corrected me, saying to use the means and SDs instead,
   # and providing appropriate SPSS output in personal correspondence:
-equivTest(26, 24, .722, rscale=.4)
-1/equivTest(26, 24, .722, rscale=.4)
+equivTest(26, 24, -.722, rscale=.4)
+1/equivTest(26, 24, -.722, rscale=.4)
+t2d(-.722, 26, 24)
 
 # Ferguson & Rueda, 2010, Violent (Hitman, Call of Duty) vs Nonviolent (Madden 07) game
 # Using means and SDs retrieved from Table 1
@@ -109,9 +138,11 @@ t = welch.t(mean(c(6.03, 6.02)), 5.89,
             26+26, 25)
 equivTest(26+26, 25, t, rscale=.4)
 1/equivTest(26+26, 25, t, rscale=.4)
+t2d(t, 26+26, 25)
 # Adachi & Willoughby 2011 exp 1
 equivTest(21, 21, 0, rscale=.4)
 1/equivTest(21, 21, 0, rscale=.4)
+t2d(0, 21, 21)
 # Adachi & Willoughby 2011 exp 2
 # Means and SDs received in personal correspondence from Adachi, 4/29/14
 t = welch.t(mean(c(-.776, .904)), mean(c(.785, -.913)),
@@ -119,21 +150,26 @@ t = welch.t(mean(c(-.776, .904)), mean(c(.785, -.913)),
             15+15, 15+15)
 equivTest(30, 30, t, rscale=.4)
 1/equivTest(30, 30, t, rscale=.4)
+t2d(t, 30, 30)
 
 # Aggressive cognition
 # Ivory & Kalyaraman, 2007
 # using F-value reported in Table 1, assuming equal cell sizes
 equivTest(60, 60, sqrt(.17), rscale=.4)
 1/equivTest(60, 60, sqrt(.17), rscale=.4)
+t2d(sqrt(.17), 60, 60)
 
 
 # List of BF02's from Dienes-Christie calculator
   
-# All effect sizes are in r-to-z units s.t. normal distribution applies 
+# All effect sizes are in Fisher's z units s.t. normal distribution applies 
+# Standard error of Fisher's z is sqrt(1/(N-3))
+# Probably better/tidier to do everything in terms of Cohen's d, as above and in ms.
+# That will be the change in the next commit.
+
 # Aggressive affect
 # Valdez & Ferguson, interaction effect violent (RDR either version) vs nonviolent (FIFA)
 BF02(sd=.101535, .223656, lower=-1, meanoftheory=.298566, sdtheory=.01996) # where am I getting all these sig digs from?
-#BF02(sd=.10, .22, lower=-1, meanoftheory=.30, sdtheory=.02) # rounding matters very little
 # Valdez & Ferguson, interaction effect as originally reported
 BF02(sd=.101535, .171667, lower=-1, meanoftheory=.298566, sdtheory=.01996)
 # Przybylski et al., Study 1
@@ -155,7 +191,7 @@ BF02(sd=.145865, .020003, lower=-1, meanoftheory=.213171, sdtheory=.026252)
   # there is argument about what is the actual value
 Bf(sd=1/sqrt(50-3), atanh(.02), lower=-1, meanoftheory=.213171, sdtheory=.02)
 
-# Ferguson & Rueda, Violent vs Nonviolent game
+# Ferguson & Rueda, 2010 Violent (Hitman, Call of Duty) vs Nonviolent game
 BF02(sd=.116248, .01, lower=-1, meanoftheory=.213171, sdtheory=.026252)
 # Adachi & Willoughby 2011 exp 1
 BF02(sd=.160128, .0, lower=-1, meanoftheory=.213171, sdtheory=.026252)
@@ -227,18 +263,6 @@ BF02(sd=.111111, .202733, lower=-1, meanoftheory=.213171, sdtheory=.026252)
 
 # Re-analysis of Tear & Nielsen, 2014, using values reported in Table 1
 # Helper functions to combine violent & ultraviolent cells, generate t-value of pairwise contrast
-pool.sd = function(sds, ns) {
-  num = sum((ns-1)*sds^2)
-  denom = sum(ns-1)
-  pool.var = num/denom
-  pool.sd = sqrt(pool.var)
-  return(pool.sd)
-}
-welch.t = function(m1, m2, sd1, sd2, n1, n2) {
-  se_diff = sqrt(sd1^2/n1 + sd2^2/n2)
-  mean_diff = m1-m2
-  return(mean_diff/se_diff)
-}
 t2R = function(tstat, N, digits=2) {
   neg = tstat<0
   Fstat = tstat^2
@@ -252,7 +276,7 @@ t2R = function(tstat, N, digits=2) {
   r.equiv.hi = (exp(2*z.hi)-1)/(exp(2*z.hi)+1)
   print(paste("Point estimate:", r.equiv))
   print(paste("95% CI: [", r.equiv.low, ", ", r.equiv.hi, "]", sep=""))
-  return(c(r.equiv.low, r.equiv, r.equiv.hi))
+  return(list("r" = r.equiv, "r.CI" = c(r.equiv.low, r.equiv.hi)))
 }
 n = 120/3
 # helping behavior
@@ -262,9 +286,9 @@ hurt = welch.t(3.35, mean(3.3, 3.35), 1.97, pool.sd(c(1.52, 1.21), c(40, 40)), 4
 # Charity donation
 charity = welch.t(2, mean(2.33, 3.0), 1.94, pool.sd(c(2.03, 2.10), c(40, 40)), 40, 80)
 ## effect sizes
-t2R(help, 120)
-t2R(hurt, 120)
-t2R(charity, 120)
+r.help = t2R(help, 120)$r
+r.hurt = t2R(hurt, 120)$r
+r.charity = t2R(charity, 120)$r
 
 # Now make BF01s:
 1/exp(ttest.tstat(t=help, n1=40, n2=80, rscale = 0.5)[['bf']])
@@ -272,5 +296,5 @@ t2R(charity, 120)
 1/exp(ttest.tstat(t=charity, n1=40, n2=80, rscale = 0.5)[['bf']])
 # and BF02s:
 #BF02(atanh(0), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252) # different mean/sd of theory for prosoc
-BF02(atanh(.013), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252)
+BF02(atanh(r.hurt), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252)
 #BF02(atanh(-.079), 1/sqrt(120-3), lower=-1, meanoftheory=.213171, sdtheory=.026252) # different mean/sd of theory for prosoc
