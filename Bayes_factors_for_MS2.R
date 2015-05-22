@@ -7,9 +7,11 @@ require(BayesFactor)
 # Load helper functions
 equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
   x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
-  y = rnorm(n2); y = y - mean(y); y = y / sd(y)  # center and scale at 0
-  SE = sqrt(var(x)/n1 + var(y)/n2)
-  y = y + t*SE # center y at t*SE
+  y = rnorm(n2); y = y - mean(y); y = y / sd(y) # center and scale at 0
+  # Assume pooled variance of 1 (as we have scaled it as such)
+  # Thus, SE depends only on sample size
+  SE = sqrt(1/n1 + 1/n2)
+  y = y + t*SE # center at t*SE
   return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
 }
 equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
@@ -20,6 +22,8 @@ equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   y = x + diff
   return(ttestBF(x, y, nullInterval=nullInterval, paired=T, rscale=rscale))
 }
+# esciTest() for use when effect size is available but F, t, M(SD) stats aren't.
+# It converts effect size r into a t-test, then runs equivTest().
 esciTest = function(r, n, rscale, paired=F) {
   se.r = sqrt((1-r^2)/(n-2)) # from http://www.sjsu.edu/faculty/gerstman/StatPrimer/correlation.pdf
   # Maybe it only holds for paired designs?
@@ -27,68 +31,100 @@ esciTest = function(r, n, rscale, paired=F) {
   if (paired==F) return(equivTest(n1=ceiling(n/2), n2=floor(n/2), t=t, rscale=rscale))
   else return(equivTestPaired(N=n, t=t, rscale=rscale))
 } 
-invertBF = function(model) {
-  return(1/exp(model@bayesFactor[['bf']]))
-}
 # Why do esciTest(.4, 40, .4) and esciTest(.4, 40, .4, paired=T)
-  # return different values? Theoretically/mathematically speaking.
-r2t = function(r, n) {
-  se.r = sqrt((1-r^2)/(n-2)) # from http://www.sjsu.edu/faculty/gerstman/StatPrimer/correlation.pdf
-  t = r / se.r
-  return(t)
+# return different values? Theoretically/mathematically speaking.
+# welch's t
+welch.t = function(m1, m2, sd1, sd2, n1, n2) {
+  sp = sqrt( ((n1-1)*sd1^2 + (n2-1) * sd2^2) / (n1 + n2 -2) )
+  se_diff = sp * sqrt(1/n1 + 1/n2)
+  mean_diff = m1-m2
+  return(mean_diff/se_diff)
 }
-
+pool.sd = function (sds, ns) {
+  SSlist = sds^2 %*% (ns-1)
+  pool.var = sum(SSlist) / sum(ns-1)
+  return(sqrt(pool.var))
+}
 # This function just takes the result from the D-C calculator and inverts it
+# could also use my equivTest function but that requires the exact per-cell N
 BF02 = function(mean, sd, lower, meanoftheory, sdtheory) {
   return(1/Bf(obtained=mean, sd=sd, lower=lower, meanoftheory=meanoftheory, sdtheory=sdtheory)$BayesFactor)
 }
-# could also use my equivTest function but that requires the exact per-cell N
-# List of BF01's from JZS Bayes, scale=.4
-# Remember slotNames() to see items w/in S4 environment
 
 # Aggressive affect
-# Valadez & Ferguson, interaction effect violent (RDR either version) vs nonviolent (FIFA)
-esciTest(.22, 100, .4) # MAY BE INVALIDATED BY UNEQUAL CELL SIZES?
-invertBF(esciTest(.22, 100, .4))
+# This is complicated by the pre-post design, as means and SDs for pre-post difference scores
+  # were not reported.
+# Thus, I have to use the effect size r as reported in the manuscript or in personal correspondence
+# Some error may be introduced via assumption of equal sample sizes.
+# This is the best we get given the numbers made available, people. Share your data!
+
 # Valdez & Ferguson, interaction effect as originally reported
 esciTest(.17, 100, .4)
-invertBF(esciTest(.17, 100, .4))
+1/esciTest(.17, 100, .4)
+# Valadez & Ferguson, interaction effect violent (RDR either version) vs nonviolent (FIFA)
+esciTest(.22, 100, .4) 
+1/esciTest(.22, 100, .4)
+
+# Przybylski et al. 2014.
+# Numbers retrieved in personal correspondence 5/13/2014
+# (There was a very minor copy-paste error)
 # Przybylski et al., Study 1
 esciTest(.004, 99, .4)
-invertBF(esciTest(.004, 99, .4))
+1/esciTest(.004, 99, .4)
 # Przybylski et al., Study 2
-esciTest(.08, 101, .4) # or is it -.08?
-invertBF(esciTest(.08, 101, .4))
+esciTest(-.08, 101, .4) 
+1/esciTest(-.08, 101, .4)
 # Pryzyblski et al., Study 5
+  # using standardized regression weight as effect size r
+  # reported on p450, left column, last paragraph 
 esciTest(.03, 109, .4)
-invertBF(esciTest(.03, 109, .4))
-# Ivory & Kalyaraman, 2007
-esciTest(.13, 120, .4)
-invertBF(esciTest(.13, 120, .4))
+1/esciTest(.03, 109, .4)
+# Ivory & Kalyanaraman, 2007
+# using F-value reported in Table 1, assuming equal sample sizes
+equivTest(60, 60, sqrt(3.83), rscale = .4)
+1/equivTest(60, 60, sqrt(3.83), rscale = .4)
+
 # Aggressive behavior
 # Elson et al. 2013 noise intensity
-esciTest(.2, 84, .4)
-invertBF(esciTest(.2, 84, .4))
+equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
+1/equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
 # Elson et al. 2013 noise duration
-esciTest(.11, 84, .4)
-invertBF(esciTest(.11, 84, .4))
+equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
+1/equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
+
 # Ferguson et al. 2008
-esciTest(.02, 50, .4)
-invertBF(esciTest(.02, 50, .4))
-# Ferguson & Rueda, Violent vs Nonviolent game
-esciTest(.01, 77, .4)
-invertBF(esciTest(.01, 77, .4))
+# As I had originally conducted it based on the p-value reported in Table 1:
+tval = qt(.55, 50-2) # get t-value according to p=.90, two-tailed
+equivTest(26, 24, tval, rscale=.4)
+1/equivTest(26, 24, tval, rscale=.4)
+# As Ferguson has corrected me, saying to use the means and SDs instead,
+  # and providing appropriate SPSS output in personal correspondence:
+equivTest(26, 24, .722, rscale=.4)
+1/equivTest(26, 24, .722, rscale=.4)
+
+# Ferguson & Rueda, 2010, Violent (Hitman, Call of Duty) vs Nonviolent (Madden 07) game
+# Using means and SDs retrieved from Table 1
+t = welch.t(mean(c(6.03, 6.02)), 5.89, 
+            pool.sd(c(1.95, 2.05), c(26, 26)), 2.03,
+            26+26, 25)
+equivTest(26+26, 25, t, rscale=.4)
+1/equivTest(26+26, 25, t, rscale=.4)
 # Adachi & Willoughby 2011 exp 1
-esciTest(0, 42, .4)
-invertBF(esciTest(0, 42, .4))
+equivTest(21, 21, 0, rscale=.4)
+1/equivTest(21, 21, 0, rscale=.4)
 # Adachi & Willoughby 2011 exp 2
-esciTest(.03, 60, .4)
-invertBF(esciTest(.03, 60, .4))
+# Means and SDs received in personal correspondence from Adachi, 4/29/14
+t = welch.t(mean(c(-.776, .904)), mean(c(.785, -.913)),
+            pool.sd(c(1.418, 1.347), c(15, 15)), pool.sd(c(1.542, 1.160), c(15, 15)),
+            15+15, 15+15)
+equivTest(30, 30, t, rscale=.4)
+1/equivTest(30, 30, t, rscale=.4)
 
 # Aggressive cognition
 # Ivory & Kalyaraman, 2007
-esciTest(-.08, 120, .4)
-invertBF(esciTest(-.08, 120, .4))
+# using F-value reported in Table 1, assuming equal cell sizes
+equivTest(60, 60, sqrt(.17), rscale=.4)
+1/equivTest(60, 60, sqrt(.17), rscale=.4)
 
 
 # List of BF02's from Dienes-Christie calculator

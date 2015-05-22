@@ -3,6 +3,15 @@ library(BayesFactor)
 library(magrittr)
 
 # Function for pilot test w/ null-equivalent region.
+equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
+  x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
+  y = rnorm(n2); y = y - mean(y); y = y / sd(y) # center and scale at 0
+  # Assume pooled variance of 1 (as we have scaled it as such)
+  # Thus, SE depends only on sample size
+  SE = sqrt(1/n1 + 1/n2)
+  y = y + t*SE # center at t*SE
+  return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
+}
 equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   x = rnorm(N)
   diff = rnorm(N, sd = sqrt(N))
@@ -11,25 +20,12 @@ equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
   y = x + diff
   return(ttestBF(x, y, nullInterval=nullInterval, paired=T, rscale=rscale))
 }
-equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.5) {
-  x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
-  y = rnorm(n2)
-  y = y/sd(y); y = y - mean(y) # center and scale at 0
-  # Assume pooled variance of 1 (as we have scaled it as such)
-  # Thus, SE depends only on sample size
-  SE = sqrt(1/n1 + 1/n2)
-  y = y + t*SE # center at t*SE
-  return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
-}
 #welch's t
 welch.t = function(m1, m2, sd1, sd2, n1, n2) {
   sp = sqrt( ((n1-1)*sd1^2 + (n2-1) * sd2^2) / (n1 + n2 -2) )
   se_diff = sp * sqrt(1/n1 + 1/n2)
   mean_diff = m1-m2
   return(mean_diff/se_diff)
-}
-invertBF = function(model) {
-  return(1/exp(model@bayesFactor[['bf']]))
 }
 
 ###
@@ -92,16 +88,26 @@ equivTest(15, 10, t, NULL)
 # Adachi & Willoughby 2010 and the insufficient pilot test
 ###
 # pilot 1, 14 subjects (paired t-test)
-equivTestPaired(14, 4.39, NULL) # Violence?
-equivTestPaired(14, -.46, NULL) # Competition
-equivTestPaired(14, .59, NULL)  # Difficulty
-equivTestPaired(14, .8, NULL)   # Pace
+# F-tests provided in Table 1. Square-root taken to convert to t statistic
+equivTestPaired(14, sqrt(19.31), NULL)  # Violence
+equivTestPaired(14, -sqrt(0.21), NULL)  # Competition
+equivTestPaired(14, sqrt(0.35), NULL)   # Difficulty
+equivTestPaired(14, sqrt(0.64), NULL)   # Pace
 
 # experiment 1, 21 subs in 2 cells each
-equivTest(21, 21, 7.858, NULL) # Violence?
-equivTest(21, 21, -.387, NULL) # Competition
-equivTest(21, 21, -1.59, NULL)  # Difficulty
-equivTest(21, 21, .89, NULL)   # Pace
+equivTest(21, 21, sqrt(61.75), NULL)  # Violence
+equivTest(21, 21, -sqrt(0.15), NULL)  # Competition
+equivTest(21, 21, -sqrt(2.54), NULL)  # Difficulty
+equivTest(21, 21, -sqrt(2.56), NULL)  # Pace
+
+# compare against Welch's t-test just for kicks
+# Violence
+t = welch.t(5.14, 2.05, 1.35, 1.20, 21, 21)
+equivTest(21, 21, t, NULL) 
+# Competition
+t = welch.t(5.00, 5.19, 0.99, 1.19, 21, 21)
+equivTest(21, 21, t, NULL) 
+# answers seem quite similar whether using F-stat or reported means & SDs. That's nice.
 
 ###
 # Anderson et al., 2004 and the insufficient pilot test
@@ -112,6 +118,7 @@ equivTest(21, 21, .89, NULL)   # Pace
 # Violence difference between Marathon 2 and Glider Pro is r = .842 [.392, .854]
 # They report means and mean squared errors, e.g. the average variance around each mean
 # We'll have to assume that MSE as the variance within each cell.
+# All values pulled from Table 1
 
 # Generate t-values, then plug those ts into equivTest:
 # Difficulty
@@ -124,12 +131,12 @@ t.act = welch.t(3.67, 2.31, sqrt(2.01), sqrt(2.01), 12, 12)
 t.fru = welch.t(4.25, 4.75, sqrt(2.38), sqrt(2.38), 12, 12)
 # Violence
 t.vio = welch.t(4.86, 1.41, sqrt(2.38), sqrt(2.38), 12, 12)
-# Bayes factors: (inverted so they give BF01 instead of BF10)
-invertBF(equivTest(12, 12, t.dif, nullInterval=NULL))
-invertBF(equivTest(12, 12, t.enj, nullInterval=NULL))
-invertBF(equivTest(12, 12, t.act, nullInterval=NULL)) # BF here favors the alternative 2.61-to-1
-invertBF(equivTest(12, 12, t.fru, nullInterval=NULL))
-invertBF(equivTest(12, 12, t.vio, nullInterval=NULL))
+# Bayes factors: 
+1/equivTest(12, 12, t.dif, nullInterval=NULL)
+1/equivTest(12, 12, t.enj, nullInterval=NULL)
+equivTest(12, 12, t.act, nullInterval=NULL) # BF here favors the alternative 2.41-to-1
+1/equivTest(12, 12, t.fru, nullInterval=NULL)
+equivTest(12, 12, t.vio, nullInterval=NULL)
 
 # Glider Pro & Marathon 2 might be equivalent on difficulty, enjoyment, frustration, but might differ in pace of action
 # Experiments 2 and 3 of this manuscript have larger sample sizes and use similar manipulations.
@@ -155,7 +162,7 @@ invertBF(equivTest(12, 12, t.vio, nullInterval=NULL))
 #                           .84, 1.67, 1.74, 1.29)
 # )
 # # generate data
-# # Shit... this is a huge pain in the ass because it's repeated-measures.
+# # Rhis is challenging because it's repeated-measures.
 # N = 19
 # genData = c()
 # for (i in dat$Condition) {
