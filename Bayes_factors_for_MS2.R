@@ -7,6 +7,7 @@ require(BayesFactor)
 #Bf(sd, obtained, uniform = FALSE, lower=0, upper=1, meanoftheory=0, sdtheory=1, tails=2)
 
 # Load helper functions
+# Note that equivTest() and esciTest() give BF (alt/null) but metaBF and BF03 give BF (null / alt)
 equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.4) {
   x = rnorm(n1); x = x - mean(x); x = x / sd(x) # center & scale @ 0
   y = rnorm(n2); y = y - mean(y); y = y / sd(y) # center and scale at 0
@@ -16,7 +17,7 @@ equivTest = function(n1, n2, t, nullInterval=NULL, mu=0, rscale=.4) {
   y = y + t*SE # center at t*SE
   return(ttestBF(x, y, nullInterval=nullInterval, paired=F, mu=mu, rscale=rscale))
 }
-equivTestPaired = function(N, t, nullInterval=NULL, rscale=.5) {
+equivTestPaired = function(N, t, nullInterval=NULL, rscale=.4) {
   x = rnorm(N)
   diff = rnorm(N, sd = sqrt(N))
   diff = diff / sd(diff) * sqrt(N) # rescale 
@@ -83,7 +84,7 @@ BF03 = function(mean, sd, lower, meanoftheory, sdtheory) {
 equivTest(18+15, 14+14+21+18, sqrt(3.11))
 1/equivTest(18+15, 14+14+21+18, sqrt(3.11))
 d = t2d(sqrt(3.11), 18+15, 14+14+21+18)
-1/metaBF(sqrt(3.11),100,half=T,r=.5)
+1/metaBF(sqrt(3.11),100,half=T,r=.4)
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
 
@@ -94,7 +95,7 @@ d = t2d(sqrt(3.11), 18+15, 14+14+21+18)
 
 equivTest(18+15, 14+14+21+18, sqrt(4.884))
 1/equivTest(18+15, 14+14+21+18, sqrt(4.884))
-1/metaBF(sqrt(4.884),100,half=T,r=.5)
+1/metaBF(sqrt(4.884),100,half=T,r=.4)
 d = r2d(.22, 18+14+15+21, 14+18)
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
@@ -106,15 +107,16 @@ esciTest(.004, 99, .4)
 1/esciTest(.004, 99, .4)
 t = qt(.515, 98)
 equivTest(54, 55, t, rscale=.4)
-1/metaBF(sqrt(4.884),100,half=T,r=.5)
-
-
+metaBF(t,100,half=T,r=.4)
 d = r2d(.004, 50, 49) # assuming nearly-equal samples
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
 # Przybylski et al., Study 2
 esciTest(-.08, 101, .4) 
 1/esciTest(-.08, 101, .4)
+t = qt(.5-(1-.41)/2, 101-2)
+equivTest(50, 51, t, rscale=.4)
+metaBF(t,100,half=T,r=.4)
 d = r2d(-.08, 50, 51) # assuming nearly-equal samples
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 # Pryzyblski et al., Study 5
@@ -122,6 +124,9 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
   # reported on p450, left column, last paragraph 
 esciTest(.03, 109, .4)
 1/esciTest(.03, 109, .4)
+t = qt(.5+(1-.74)/2, 109-2)
+1/equivTest(54, 55, t)
+metaBF(t, 109, half=T, r=.4)
 d = r2d(.03, 55, 54)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
@@ -129,6 +134,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 # using F-value reported in Table 1, assuming equal sample sizes
 equivTest(60, 60, sqrt(3.83), rscale = .4)
 1/equivTest(60, 60, sqrt(3.83), rscale = .4)
+1/metaBF(sqrt(3.83), 120, half=T, r=.4)
 d = t2d(sqrt(3.83), 60, 60)
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
@@ -136,11 +142,13 @@ d = t2d(sqrt(3.83), 60, 60)
 # Elson et al. 2013 noise intensity
 equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
 1/equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
+1/metaBF(sqrt(3.28), 84, half=T, r=.4)
 d = t2d(sqrt(3.28), 42, 42)
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # Elson et al. 2013 noise duration
 equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
 1/equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
+metaBF(sqrt(.95), 84, half=T, r=.4)
 d=t2d(sqrt(.95), 42, 42)
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
@@ -149,6 +157,7 @@ d=t2d(sqrt(.95), 42, 42)
 tval = qt(.55, 50-2) # get t-value according to p=.90, two-tailed
 equivTest(26, 24, tval, rscale=.4)
 1/equivTest(26, 24, tval, rscale=.4)
+metaBF(tval, 50, half=T, r=.4)
 d = t2d(tval, 26, 24)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
@@ -156,6 +165,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
   # and providing appropriate SPSS output in personal correspondence:
 equivTest(26, 24, -.722, rscale=.4)
 1/equivTest(26, 24, -.722, rscale=.4)
+metaBF(-.722, 50, half=T, r=.4)
 d = t2d(-.722, 26, 24)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
@@ -166,11 +176,13 @@ t = welch.t(mean(c(6.03, 6.02)), 5.89,
             26+26, 25)
 equivTest(26+26, 25, t, rscale=.4)
 1/equivTest(26+26, 25, t, rscale=.4)
+metaBF(t, 26+26+25, half=T, r=.4)
 d = t2d(t, 26+26, 25)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # Adachi & Willoughby 2011 exp 1
 equivTest(21, 21, 0, rscale=.4)
 1/equivTest(21, 21, 0, rscale=.4)
+metaBF(0, 42, half=T, r=.4)
 d = t2d(0, 21, 21)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # Adachi & Willoughby 2011 exp 2
@@ -180,6 +192,7 @@ t = welch.t(mean(c(-.776, .904)), mean(c(.785, -.913)),
             15+15, 15+15)
 equivTest(30, 30, t, rscale=.4)
 1/equivTest(30, 30, t, rscale=.4)
+metaBF(t, 60, half=T, r=.4)
 d = t2d(t, 30, 30)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
@@ -188,6 +201,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 t = welch.t(3.35, mean(3.3, 3.35), 1.97, pool.sd(c(1.52, 1.21), c(40, 40)), 40, 80)
 equivTest(40, 80, t, rscale=.4)
 1/equivTest(40, 80, t, rscale=.4)
+metaBF(t, 120, half=T, r=.4)
 d = t2d(t, 40, 80)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
@@ -196,6 +210,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # using F-value reported in Table 1, assuming equal cell sizes
 equivTest(60, 60, sqrt(.17), rscale=.4)
 1/equivTest(60, 60, sqrt(.17), rscale=.4)
+metaBF(sqrt(.17), 120, half=T, r=.4)
 d = t2d(sqrt(.17), 60, 60)
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
@@ -207,9 +222,10 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 Flist = c(3.28, 1.46, 4.14, .95, .19, 1.74, 2.78, 2.77, 2.17, 16.01, .17, .08, .01,
           10.57) # this last 10.57 is in text but not table, has neg. r.
 tlist = sqrt(Flist)
+tail(tlist, 1) = -tail(tlist, 1) # turn that one back to negative
 # Function to turn these to effect size r
 F2R = function(Fstat, N, width=.95, neg=F) {
-  r.equiv = sqrt(Fstat/(Fstat + N - 2)) # is this where the loss of fidelity happens?
+  r.equiv = sqrt(Fstat/(Fstat + N - 2)) 
   if(neg==T) {r.equiv=-(r.equiv)}
   zScore = 1/2 * log((1+r.equiv)/(1-r.equiv))
   z.se = 1/sqrt(N-3)
@@ -227,28 +243,37 @@ for (f in Flist) {
   rList = c(rList, r)
   rList = round(rList, 2)
 }
-rList[length(rList)] = -rList[length(rList)] # flipping that last one
+tail(rList, 1) = -tail(rList, 1) # flipping that last one
 write(rList, "Elson-output-r.txt", ncolumns=1)
 
+# Bayes factors
+# BF01
 bf01list = c()
 for (i in 1:length(tlist)) {
   BF01 = 1/exp(ttest.tstat(t=tlist[i], n1=42, n2=42, rscale = 0.4)[['bf']])
   bf01list = c(bf01list, BF01)
 }
 write(bf01list, "Elson-output-BF01.txt", ncolumns=1)
+#BF02
+bf02list = c()
+for (i in 1:length(tlist)) {
+  BF02 = metaBF(tlist[i], 84, half=T, r=.4)
+  bf02list = c(bf02list, BF02)
+}
+write(bf02list, "Elson-output-BF02.txt", ncolumns=1)
 # or use Dienes for BF03:
-bf02list = c(); N = 84
+bf03list = c(); N = 84
 for (f in Flist) {
   r.equiv = sqrt(f/(f + N - 2))
   z = atanh(r.equiv)
   if (f == 10.57) z = -z # turn that last one negative, sorry about the kludge.
   z.se = 1/sqrt(N-3)
-  bf02 = BF03(z, z.se, lower=-1, meanoftheory=.213171, sdtheory=.026252)
-  bf02list = c(bf02list, bf02)
+  bf03 = BF03(z, z.se, lower=-1, meanoftheory=.213171, sdtheory=.026252)
+  bf03list = c(bf03list, bf03)
   #zlist = c(zlist, z)
   #zlist.se = c(zlist.se, z.se)
 }
-write(bf02list, file="Elson-output-BF03.txt", ncolumns=1)
+write(bf03list, file="Elson-output-BF03.txt", ncolumns=1)
 
 
 # Other re-analysis of Tear & Nielsen, 2014, using values reported in Table 1
