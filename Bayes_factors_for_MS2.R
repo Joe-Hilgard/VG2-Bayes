@@ -83,7 +83,7 @@ BF03 = function(mean, sd, lower, meanoftheory, sdtheory) {
 # Valadez & Ferguson, interaction effect as originally reported (F-value on p. 614)
 equivTest(18+15, 14+14+21+18, sqrt(3.11))
 1/equivTest(18+15, 14+14+21+18, sqrt(3.11))
-d = t2d(sqrt(3.11), 18+15, 14+14+21+18)
+(d = t2d(sqrt(3.11), 18+15, 14+14+21+18))
 1/metaBF(sqrt(3.11),100,half=T,r=.4)
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
@@ -96,7 +96,7 @@ d = t2d(sqrt(3.11), 18+15, 14+14+21+18)
 equivTest(18+15, 14+14+21+18, sqrt(4.884))
 1/equivTest(18+15, 14+14+21+18, sqrt(4.884))
 1/metaBF(sqrt(4.884),100,half=T,r=.4)
-d = r2d(.22, 18+14+15+21, 14+18)
+(d = r2d(.22, 18+14+15+21, 14+18))
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
 # Przybylski et al. 2014.
@@ -108,7 +108,7 @@ esciTest(.004, 99, .4)
 t = qt(.515, 98)
 equivTest(54, 55, t, rscale=.4)
 metaBF(t,100,half=T,r=.4)
-d = r2d(.004, 50, 49) # assuming nearly-equal samples
+(d = r2d(.004, 50, 49)) # assuming nearly-equal samples
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
 # Przybylski et al., Study 2
@@ -117,7 +117,7 @@ esciTest(-.08, 101, .4)
 t = qt(.5-(1-.41)/2, 101-2)
 equivTest(50, 51, t, rscale=.4)
 metaBF(t,100,half=T,r=.4)
-d = r2d(-.08, 50, 51) # assuming nearly-equal samples
+(d = r2d(-.08, 50, 51)) # assuming nearly-equal samples
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 # Pryzyblski et al., Study 5
   # using standardized regression weight as effect size r
@@ -127,7 +127,7 @@ esciTest(.03, 109, .4)
 t = qt(.5+(1-.74)/2, 109-2)
 1/equivTest(54, 55, t)
 metaBF(t, 109, half=T, r=.4)
-d = r2d(.03, 55, 54)
+(d = r2d(.03, 55, 54))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
 # Ivory & Kalyanaraman, 2007
@@ -135,7 +135,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 equivTest(60, 60, sqrt(3.83), rscale = .4)
 1/equivTest(60, 60, sqrt(3.83), rscale = .4)
 1/metaBF(sqrt(3.83), 120, half=T, r=.4)
-d = t2d(sqrt(3.83), 60, 60)
+(d = t2d(sqrt(3.83), 60, 60))
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.61, sdtheory=.056)
 
 # Aggressive behavior
@@ -143,13 +143,13 @@ d = t2d(sqrt(3.83), 60, 60)
 equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
 1/equivTest(84/2, 84/2, sqrt(3.28), rscale=.4)
 1/metaBF(sqrt(3.28), 84, half=T, r=.4)
-d = t2d(sqrt(3.28), 42, 42)
+(d = t2d(sqrt(3.28), 42, 42))
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # Elson et al. 2013 noise duration
 equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
 1/equivTest(84/2, 84/2, sqrt(.95), rscale=.4)
 metaBF(sqrt(.95), 84, half=T, r=.4)
-d=t2d(sqrt(.95), 42, 42)
+(d=t2d(sqrt(.95), 42, 42))
 1/BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
 # Ferguson et al. 2008
@@ -166,7 +166,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 equivTest(26, 24, -.722, rscale=.4)
 1/equivTest(26, 24, -.722, rscale=.4)
 metaBF(-.722, 50, half=T, r=.4)
-d = t2d(-.722, 26, 24)
+(d = t2d(-.722, 26, 24))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
 # Ferguson & Rueda, 2010, Violent (Hitman, Call of Duty) vs Nonviolent (Madden 07) game
@@ -177,13 +177,13 @@ t = welch.t(mean(c(6.03, 6.02)), 5.89,
 equivTest(26+26, 25, t, rscale=.4)
 1/equivTest(26+26, 25, t, rscale=.4)
 metaBF(t, 26+26+25, half=T, r=.4)
-d = t2d(t, 26+26, 25)
+(d = t2d(t, 26+26, 25))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # Adachi & Willoughby 2011 exp 1
 equivTest(21, 21, 0, rscale=.4)
 1/equivTest(21, 21, 0, rscale=.4)
 metaBF(0, 42, half=T, r=.4)
-d = t2d(0, 21, 21)
+(d = t2d(0, 21, 21))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 # Adachi & Willoughby 2011 exp 2
 # Means and SDs received in personal correspondence from Adachi, 4/29/14
@@ -193,7 +193,7 @@ t = welch.t(mean(c(-.776, .904)), mean(c(.785, -.913)),
 equivTest(30, 30, t, rscale=.4)
 1/equivTest(30, 30, t, rscale=.4)
 metaBF(t, 60, half=T, r=.4)
-d = t2d(t, 30, 30)
+(d = t2d(t, 30, 30))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
 # Tear & Nielsen, 2014, using values reported in Table 1
@@ -202,7 +202,7 @@ t = welch.t(3.35, mean(3.3, 3.35), 1.97, pool.sd(c(1.52, 1.21), c(40, 40)), 40, 
 equivTest(40, 80, t, rscale=.4)
 1/equivTest(40, 80, t, rscale=.4)
 metaBF(t, 120, half=T, r=.4)
-d = t2d(t, 40, 80)
+(d = t2d(t, 40, 80))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
 # Aggressive cognition
@@ -211,7 +211,7 @@ BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 equivTest(60, 60, sqrt(.17), rscale=.4)
 1/equivTest(60, 60, sqrt(.17), rscale=.4)
 metaBF(sqrt(.17), 120, half=T, r=.4)
-d = t2d(sqrt(.17), 60, 60)
+(d = t2d(sqrt(.17), 60, 60))
 BF03(d$d, d$d.se, lower=-1, meanoftheory=.43, sdtheory=.046)
 
 
