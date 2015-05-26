@@ -67,26 +67,3 @@ return(dinvgamma(g,.5,.5)*exp(t1+t2))
 ##################################################
 
 
-##################################################
-#Usage
-##################################################
-
-
-#output is null over alternative
-#USAGE For TABLE 2 of Rouder and Morey, 2011
-N=c(100,100,100,100)
-t=c(2.16,1.25,2.80,1.44)
-alt.2.tail=metaBF(t,N,half=F)
-tab2.bf=1/alt.2.tail  #near value reported by Rouder and Morey (difference is rounding)
-
-#for one-tailed alternatives (null is point plus all negative effects)
-alt.1.tail=metaBF(t,N,half=T)
-#or
-1/alt.1.tail
-
-#for one-tailed alternatives w smaller r
-alt.1.tail=metaBF(t,N,half=T,r=.5)
-#or
-1/alt.1.tail
-
-
