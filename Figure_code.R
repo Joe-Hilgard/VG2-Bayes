@@ -10,7 +10,7 @@ pdf('BFFigure.pdf', width=8, height=10) # attempting to scale approximately to A
 par(mfrow=c(3,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
 # pick hypothetical value of obs
 obs = .1
-
+obs1 = .7
 # Plotting, row 1
 # Priors:
 plot(z,f,typ='n', # type 'n' for no plotting, just scales
@@ -29,10 +29,16 @@ mtext(side=3,adj=.05,cex=1.5,'A.',line=-1.5)
 # Probabilities given data:
 plot(z,Epred.s,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
 lines(z,Ppred.s,lty=3,lwd=2,col='darkred') # data given point-alternative
+# an observation supporting the null
 abline(v=obs,col='grey')
-points(obs,EDens(obs,N.s),cex=1.3,pch=19)
-points(obs,PDens(obs,N.s),cex=1.3,pch=19)
+points(obs,EDens(obs,N.s),cex=1.3,pch=1)
+points(obs,PDens(obs,N.s),cex=1.3,pch=1)
 EDens(obs,N.s)/PDens(obs,N.s)
+# an observation supporting the alternative
+abline(v=obs1, col='grey', lty=2)
+points(obs1,EDens(obs1,N.s),cex=1.3,pch=19)
+points(obs1,PDens(obs1,N.s),cex=1.3,pch=19)
+EDens(obs1,N.s)/PDens(obs1,N.s)
 #points(obs,CDens(obs[1],N),cex=1.3,pch=19,col='darkgreen')
 #points(obs,NDens(obs, N), cex=1.3, pch=19, col='darkred')
 #lines(z, Cpred,lty=2,lwd=2,col='darkgreen') # data given JZS prior
@@ -57,35 +63,59 @@ mtext(side=3,adj=.05,cex=1.5,'C.',line=-1.5)
 # Probabilities given data:
 plot(z,Epred.s,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
 lines(z,Cpred.s,lty=2,lwd=2,col='darkgreen') # data given JZS-prior alternative
+# observation supporting the null
 abline(v=obs,col='grey')
-points(obs,EDens(obs,N.s),cex=1.3,pch=19)
-points(obs,CDens(obs,N.s),cex=1.3,pch=19)
-text(-.4,.37,expression(paste("Model ",M[0])),adj=1)
-text(.65,.13,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
-mtext(side=3,adj=.05,cex=1.5,'D.',line=-1.5)
+points(obs,EDens(obs,N.s),cex=1.3,pch=1)
+points(obs,CDens(obs,N.s),cex=1.3,pch=1)
 EDens(obs,N.s)/CDens(obs,N.s)
+# observation supporting the alternative
+abline(v=obs1,col='grey', lty=2)
+points(obs1,EDens(obs1,N.s),cex=1.3,pch=19)
+points(obs1,CDens(obs1,N.s),cex=1.3,pch=19)
+EDens(obs1,N.s)/CDens(obs1,N.s)
+# text labels
+text(-.4,.37,expression(paste("Model ",M[0])),adj=1)
+text(.75,.05,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+mtext(side=3,adj=.05,cex=1.5,'D.',line=-1.5)
+
 
 # Plotting, row 3
 # H0 vs Craig meta with big N
 plot(z,Epred.l,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
 lines(z,Ppred.l,lty=3,lwd=2,col='darkred') # data given point-alternative
+# observation favoring null
 abline(v=obs,col='grey')
-points(obs,EDens(obs,N.l),cex=1.3,pch=19)
-points(obs,PDens(obs,N.l),cex=1.3,pch=19)
+points(obs,EDens(obs,N.l),cex=1.3,pch=1)
+points(obs,PDens(obs,N.l),cex=1.3,pch=1)
 EDens(obs,N.l)/PDens(obs,N.l)
+# observation favoring alternative
+abline(v=obs,col='grey', lty=2)
+points(obs1,EDens(obs1,N.l),cex=1.3,pch=19)
+points(obs1,PDens(obs1,N.l),cex=1.3,pch=19)
+EDens(obs1,N.l)/PDens(obs1,N.l)
+# text labels
 text(-.35,.30,expression(paste("Model ",M[0])),adj=1)
-text(.9,.025,expression(paste("Model ",M[a])),col="darkred",adj=0)
+text(.9,.05,expression(paste("Model ",M[a])),col="darkred",adj=0)
 mtext(side=3,adj=.05,cex=1.5,'E.',line=-1.5)
+
 # H0 vs vague alternative with big N
 plot(z,Epred.l,typ='l',xlab=expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/s)),ylab="Density")
 lines(z,Cpred.l,lty=2,lwd=2,col='darkgreen') # data given JZS-prior alternative
+# observation suporting null
 abline(v=obs,col='grey')
-points(obs,EDens(obs,N.l),cex=1.3,pch=19)
-points(obs,CDens(obs,N.l),cex=1.3,pch=19)
-text(-.3,.32,expression(paste("Model ",M[0])),adj=1)
-text(.5,.07,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
-mtext(side=3,adj=.05,cex=1.5,'F.',line=-1.5)
+points(obs,EDens(obs,N.l),cex=1.3,pch=1)
+points(obs,CDens(obs,N.l),cex=1.3,pch=1)
 EDens(obs,N.l)/CDens(obs,N.l)
+# observation supporting alternative
+abline(v=obs1,col='grey', lty=2)
+points(obs1,EDens(obs1,N.l),cex=1.3,pch=19)
+points(obs1,CDens(obs1,N.l),cex=1.3,pch=19)
+EDens(obs1,N.l)/CDens(obs1,N.l)
+# text labels
+text(-.3,.32,expression(paste("Model ",M[0])),adj=1)
+text(.75,.05,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+mtext(side=3,adj=.05,cex=1.5,'F.',line=-1.5)
+
 
 dev.off()
 
