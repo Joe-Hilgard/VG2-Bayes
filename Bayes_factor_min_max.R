@@ -2,7 +2,7 @@
 require(BayesFactor)
 
 # Prepare plot space
-pdf('BFminmax.pdf', width=8, height=4) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
+png('BFminmax.png', width=8, height=4, units="in", res=144) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(1,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0))
 
 # Independent groups t-test
@@ -38,7 +38,7 @@ plot(nVector, BF01_twoSamp_min, typ='l', log="y", ylim=c(3^-1,6),
      yaxt = 'n',
      lty=3, lwd=2)
 axis(2, at=c(10^-1, 6^-1, 3^-1, 1, 3, 6, 10)
-     , labels=c("1:10", "1:6", "1:3", "1:1", "3:1", "6:1", "10:1"),
+     , labels=c("1:10", "1:6", "1:3", "1:1", "3:1", "6:1", "10:1")
 )
 abline(h=1, col='grey')
 lines(nVector, BF01_twoSamp_max, typ='l')
@@ -74,7 +74,7 @@ plot(nVector1, BF01_oneSamp_max, typ='l', log="y", ylim=c(3^-1,6),
      ylab = "Bayes factor (null / alternative)", 
      yaxt = 'n')
 axis(2, at=c(10^-1, 6^-1, 3^-1, 1, 3, 6, 10)
-     , labels=c("1:10", "1:6", "1:3", "1:1", "3:1", "6:1", "10:1"),
+     , labels=c("1:10", "1:6", "1:3", "1:1", "3:1", "6:1", "10:1")
 )
 abline(h=1, col='grey')
 lines(nVector1, BF01_oneSamp_min, typ='l', lty=3, lwd=2)

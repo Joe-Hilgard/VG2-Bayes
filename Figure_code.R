@@ -6,7 +6,7 @@ source("generate_figure_data.R")
 
 ## Figure 1
 # Prepare plot space
-pdf('BFFigure.pdf', width=8, height=10) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
+png('BFFigure.png', width=8, height=8, units="in", res=144) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(3,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
 # pick hypothetical value of obs
 obs = .1
@@ -75,7 +75,7 @@ points(obs1,CDens(obs1,N.s),cex=1.3,pch=19)
 EDens(obs1,N.s)/CDens(obs1,N.s)
 # text labels
 text(-.4,.37,expression(paste("Model ",M[0])),adj=1)
-text(.75,.05,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
+text(.79,.05,expression(paste("Model ",M[a])),col="darkgreen",adj=0)
 mtext(side=3,adj=.05,cex=1.5,'D.',line=-1.5)
 
 
@@ -122,7 +122,7 @@ dev.off()
 ## Figure 2:
 
 # Prepare plot space
-pdf('BFFigure2.pdf', width=8, height=4) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
+png('BFFigure2.png', width=8, height=4, units="in", res=144) # attempting to scale approximately to A4 dimensions #width=12,height=24) 
 par(mfrow=c(1,2),cex=1,mar=c(4,4,.5,1),mgp=c(2.2,1,0)) # 
 
 # BF20 vs observed effect size:
@@ -133,8 +133,8 @@ plot(x=effectNarrow, xlab = expression(paste("Observed Effect Size, ",(bar(y)-ba
      ,yaxt='n', lty=2
 )
 abline(h=1, col='grey')
-axis(2, at=10^(c(-2, -1, 0, 1, 3, 5))
-     , labels=c("0.01", "0.1", "1", "10", "1000", "10^4"),
+axis(2, at=10^(c(-2, -1, 0, 1, 3, 5)), 
+     labels=c("0.01", "0.1", "1", "10", "1000", "10^4")
 )
 lines(x=effectNarrow, y=1/BFList2.s#, lty=2, col="darkred"
       )
@@ -151,7 +151,7 @@ plot(x=effect, xlab = expression(paste("Observed Effect Size, ",(bar(y)-bar(x))/
      yaxt='n'
 )
 axis(2, at=c(.0001, .001, .01, .1, 1, 10), 
-     labels=c(".0001", ".001", ".01", ".1", "1", "10"),
+     labels=c(".0001", ".001", ".01", ".1", "1", "10")
 )
 abline(h=1, col='grey')
 #lines(x=effect, y=BFList.m, lty=2, col=2)
